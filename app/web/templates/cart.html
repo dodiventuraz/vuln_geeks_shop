@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Keranjang{% endblock %}
+{% block content %}
+<h1>Keranjang</h1>
+{% if cart.items %}
+<table>
+  <thead><tr><th>Produk</th><th>Harga</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead>
+  <tbody>
+    {% for it in cart.items %}
+    <tr>
+      <td><a href="/product/{{ it.product.id }}">{{ it.product.name }}</a></td>
+      <td>Rp {{ '%.2f'|format(it.product.price) }}</td>
+      <td>
+        <form action="/cart/update" method="post" style="display:flex; gap:.4rem">
+          <input type="hidden" name="item_id" value="{{ it.id }}">
+          <input type="number" name="quantity" value="{{ it.quantity }}" min="0" style="width:70px">
+          <button type="submit">Update</button>
+        </form>
+      </td>
+      <td>Rp {{ '%.2f'|format(it.product.price * it.quantity) }}</td>
+      <td>
+        <form action="/cart/remove" method="post">
+          <input type="hidden" name="item_id" value="{{ it.id }}">
+          <button class="btn btn-danger" type="submit">Hapus</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p style="margin-top:1rem" class="price">Subtotal: Rp {{ '%.2f'|format(totals.subtotal) }}</p>
+<a class="btn" href="/checkout">Lanjut ke Checkout</a>
+{% else %}
+<p class="muted">Keranjang kosong. <a href="/">Belanja dulu</a>.</p>
+{% endif %}
+{% endblock %}

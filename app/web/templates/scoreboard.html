@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Scoreboard{% endblock %}
+{% block content %}
+<h1>Scoreboard</h1>
+<p class="muted">Submit flag (format <code>FLAG{...}</code>) yang kamu temukan dari eksploitasi.
+  Progres disimpan di sesi browser-mu (mode free-form).</p>
+
+{% if message %}<div class="alert {{ 'ok' if message_ok else 'error' }}">{{ message }}</div>{% endif %}
+
+<div class="card" style="margin-bottom:1rem">
+  <strong>Progres:</strong> {{ solved_count }} / {{ total }} flag
+  <div class="progress"><div class="progress-fill" style="width:{{ (100 * solved_count / total) if total else 0 }}%"></div></div>
+</div>
+
+<form class="stack" action="/submit-flag" method="post" style="max-width:520px">
+  <label>Flag</label>
+  <input type="text" name="flag" placeholder="FLAG{...}" required>
+  <button type="submit">Submit Flag</button>
+</form>
+
+<h3 style="margin-top:1.4rem">Daftar Challenge</h3>
+<table>
+  <thead><tr><th>ID</th><th>Area</th><th>Level</th><th>Aktif</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for c in items %}
+    <tr>
+      <td>{{ c.id }}</td>
+      <td>{{ c.section }}</td>
+      <td>{{ c.level or '—' }}</td>
+      <td>{{ '✓' if c.enabled else '·' }}</td>
+      <td>{% if c.id in solved %}<span style="color:var(--ok)">✔ solved</span>
+          {% elif not c.has_flag %}<span class="muted">info</span>
+          {% else %}<span class="muted">—</span>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

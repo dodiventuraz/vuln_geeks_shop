@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Kartu Ucapan{% endblock %}
+{% block content %}
+<h1>Kartu Ucapan Hadiah</h1>
+<p class="muted">Tulis pesan ucapan; sistem akan menampilkan pratinjaunya.</p>
+<form class="stack" action="/greeting" method="post">
+  <label>Pesan</label>
+  <textarea name="message" rows="3" required>{{ message or '' }}</textarea>
+  <button type="submit">Pratinjau</button>
+</form>
+
+{% if rendered is defined and rendered is not none %}
+<h3 style="margin-top:1.4rem">Pratinjau</h3>
+<div class="card">{{ rendered }}</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,36 @@
+# Vuln Geeks Shop — dependencies (P0 Fondasi)
+#
+# CATATAN: paket ber-CVE untuk W-A06 SENGAJA belum dimasukkan di fase ini.
+# Itu ditambahkan & didokumentasikan pada fase P2/P3 (lihat CLAUDE.md §9).
+
+# --- Web framework / server ---
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+
+# --- ORM / DB ---
+SQLAlchemy==2.0.30
+psycopg2-binary==2.9.9
+
+# --- Config ---
+pydantic==2.7.4
+pydantic-settings==2.3.4
+email-validator==2.2.0        # dukungan Pydantic EmailStr
+
+# --- Template / SSR (dipakai mulai P1) ---
+# LAB-VULN: W-A06 (intentional) — Jinja2 3.1.2 di-pin ke versi ber-CVE.
+#   CVE-2024-22195 (XSS via `xmlattr` filter, fixed 3.1.3)
+#   CVE-2024-34064 (XSS via `xmlattr` keys, fixed 3.1.4)
+# Didokumentasikan di SOLUTIONS.md §W-A06. JANGAN upgrade tanpa mematikan challenge.
+Jinja2==3.1.2
+
+# --- Auth (dipakai mulai P1) ---
+PyJWT==2.8.0
+itsdangerous==2.2.0            # backing SessionMiddleware
+
+# --- Utilitas ---
+python-multipart==0.0.9       # upload file (P1)
+httpx==0.27.0                 # HTTP client (fitur SSRF terkontrol, P2+)
+PyYAML==6.0.1                 # loader challenges.yaml
+
+# --- Test ---
+pytest==8.2.2

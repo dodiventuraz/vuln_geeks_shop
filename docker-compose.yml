@@ -1,0 +1,73 @@
+# Vuln Geeks Shop — orkestrasi lab (non-produksi)
+#
+# ISOLASI (CLAUDE.md §2 / PRD REQ-S1): hanya service `app` yang dipublikasikan ke
+# host, dan HANYA ke 127.0.0.1. db / mailhog-smtp / stub internal tetap di jaringan
+# internal Docker, tak terjangkau dari luar.
+
+services:
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: postgresql+psycopg2://vuln:vuln@db:5432/vulnshop
+      HOST: 0.0.0.0            # bind di dalam container saja; publikasi dibatasi di bawah
+      PORT: 8000
+    ports:
+      - "127.0.0.1:8000:8000"  # JANGAN ubah ke 0.0.0.0
+    networks:
+      - labnet
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: vuln
+      POSTGRES_PASSWORD: vuln
+      POSTGRES_DB: vulnshop
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - labnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vuln -d vulnshop"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # Tidak dipublikasikan ke host — hanya internal labnet.
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    networks:
+      - labnet
+    ports:
+      - "127.0.0.1:8025:8025"  # UI mailhog di localhost saja (SMTP 1025 tetap internal)
+
+  # --- Stub internal (target masa depan; P0 hanya placeholder di labnet) ---
+
+  internal-metadata:
+    # Target SSRF internal (W-A10 / A-7). Hanya terjangkau dari jaringan internal.
+    image: hashicorp/http-echo:1.0
+    command: ["-listen=:80", "-text=internal-metadata secret: FLAG{ssrf_import}"]
+    networks:
+      - labnet
+
+  payment-mock:
+    # Gateway pembayaran mock (A-10). P0: stub http sederhana, tidak diekspos ke host.
+    image: hashicorp/http-echo:1.0
+    command: ["-listen=:80", "-text=payment-mock stub — placeholder P0"]
+    networks:
+      - labnet
+
+networks:
+  labnet:
+    driver: bridge
+
+volumes:
+  db_data:

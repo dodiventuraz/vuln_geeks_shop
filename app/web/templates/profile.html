@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Profil{% endblock %}
+{% block content %}
+<h1>Profil</h1>
+<div class="row">
+  <div style="flex:1; min-width:280px">
+    <h3>Data akun</h3>
+    <form class="stack" action="/profile" method="post">
+      <label>Nama</label>
+      <input type="text" name="name" value="{{ user.name }}" required>
+      <label>Email</label>
+      <input type="email" name="email" value="{{ user.email }}" required>
+      <button type="submit">Simpan</button>
+    </form>
+    <p class="muted" style="margin-top:.6rem">Role: {{ user.role }} · Terverifikasi: {{ user.is_verified }}</p>
+
+    {% if weak_hash %}
+    {# W-A02a: kredensial tersimpan sebagai md5 tanpa salt — mudah di-crack. #}
+    <div class="flag-banner" style="word-break:break-all">
+      🔎 Stored credential (unsalted MD5): {{ weak_hash }}<br>🚩 {{ challenges.flag('web.W-A02a') }}
+    </div>
+    {% endif %}
+
+    <h3 style="margin-top:1.4rem">Metode Pembayaran (mock)</h3>
+    {% if user.card_number %}
+      <p>Kartu tersimpan: <strong>{{ user.card_number }}</strong></p>
+      {% if pii_plaintext %}
+      <div class="flag-banner">🚩 {{ challenges.flag('web.W-A02b') }} — PAN tersimpan plaintext!</div>
+      {% endif %}
+    {% endif %}
+    <form class="stack" action="/profile/billing" method="post">
+      <label>Nomor kartu (mock)</label>
+      <input type="text" name="card_number" placeholder="4111 1111 1111 1111">
+      <button type="submit">Simpan Kartu</button>
+    </form>
+
+    <h3 style="margin-top:1.4rem">Avatar</h3>
+    {% if user.avatar_path %}<img class="thumb" style="width:120px;height:120px" src="/{{ user.avatar_path }}">{% endif %}
+    <form class="stack" action="/profile/avatar" method="post" enctype="multipart/form-data">
+      <input type="file" name="avatar" accept="image/*" required>
+      <button type="submit">Upload Avatar</button>
+    </form>
+  </div>
+  <div style="flex:1; min-width:280px">
+    <h3>Alamat</h3>
+    <ul>
+      {% for a in user.addresses %}
+      <li class="muted">{{ a.line1 }}, {{ a.city }} {{ a.postal_code }} ({{ a.country }})</li>
+      {% else %}<li class="muted">Belum ada alamat.</li>{% endfor %}
+    </ul>
+    <form class="stack" action="/profile/address" method="post">
+      <label>Alamat</label><input type="text" name="line1" required>
+      <label>Kota</label><input type="text" name="city" required>
+      <label>Kode pos</label><input type="text" name="postal_code" required>
+      <label>Negara</label><input type="text" name="country" value="ID">
+      <label>Telepon</label><input type="text" name="phone">
+      <button type="submit">Tambah Alamat</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

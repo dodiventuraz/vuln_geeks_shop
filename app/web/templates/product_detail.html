@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<div class="row">
+  <div style="flex:1; min-width:260px;">
+    {% if product.image_path %}<img class="thumb" style="height:280px" src="/{{ product.image_path }}" alt="{{ product.name }}">
+    {% else %}<div class="thumb" style="height:280px">{{ product_thumbnail(product) }}</div>{% endif %}
+  </div>
+  <div style="flex:1; min-width:260px;">
+    <h1>{{ product.name }}</h1>
+    <p class="price" style="font-size:1.4rem">Rp {{ '%.2f'|format(product.price) }}</p>
+    <p class="muted">Stok: {{ product.stock }} · Kategori: {{ product.category.name if product.category else '—' }}</p>
+    <p>{{ product.description }}</p>
+    <div class="row">
+      <form action="/cart/add" method="post">
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <input type="number" name="quantity" value="1" min="1" max="100" style="width:80px">
+        <button type="submit">Tambah ke Keranjang</button>
+      </form>
+      {% if user %}
+      <form action="/wishlist/add" method="post">
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <button class="btn" type="submit">♡ Wishlist</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<h2 style="margin-top:2rem">Review</h2>
+{% for r in reviews %}
+  <div class="review">
+    <strong>{{ r.user.name }}</strong> <span class="muted">· {{ '★' * r.rating }}</span>
+    {% if challenges.enabled("web.W-A03b") %}
+    {# LAB-VULN: W-A03b Stored XSS (intentional) — body review dirender tanpa escape. #}
+    <p>{{ r.body | safe }}</p>
+    {% else %}
+    <p>{{ r.body }}</p>  {# AMAN: autoescape aktif. #}
+    {% endif %}
+  </div>
+{% else %}
+  <p class="muted">Belum ada review.</p>
+{% endfor %}
+
+{% if user %}
+<form class="stack" action="/product/{{ product.id }}/review" method="post" style="margin-top:1rem">
+  <label>Rating (1-5)</label>
+  <input type="number" name="rating" min="1" max="5" value="5" style="width:80px">
+  <label>Komentar</label>
+  <textarea name="body" rows="3" required></textarea>
+  <button type="submit">Kirim Review</button>
+</form>
+{% else %}
+  <p class="muted"><a href="/login">Login</a> untuk menulis review.</p>
+{% endif %}
+{% endblock %}

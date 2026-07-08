@@ -1,0 +1,10 @@
+# Normalisasi line-ending: simpan sebagai LF di repo (konsisten lintas-OS).
+* text=auto eol=lf
+
+# File biner (bila ada) — jangan diutak-atik.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary

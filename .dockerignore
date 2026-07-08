@@ -1,0 +1,19 @@
+# Jangan copy artefak lokal ke build context/image
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.git/
+.github/
+*.db
+*.sqlite3
+data/
+uploads/
+.env
+.claude/
+labdev.db
+SOLUTIONS.md

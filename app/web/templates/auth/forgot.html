@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Lupa Password{% endblock %}
+{% block content %}
+<h1>Lupa Password</h1>
+{% if sent %}
+  <div class="alert ok">Jika email terdaftar, tautan reset telah dibuat.</div>
+  {% if reset_link %}
+    <p class="muted">Lab: (di produksi dikirim via email) tautan reset kamu:
+      <a href="{{ reset_link }}">{{ reset_link }}</a></p>
+  {% endif %}
+{% else %}
+<form class="stack" action="/forgot" method="post">
+  <label>Email akun</label>
+  <input type="email" name="email" required>
+  <button type="submit">Kirim Tautan Reset</button>
+</form>
+{% endif %}
+{% endblock %}

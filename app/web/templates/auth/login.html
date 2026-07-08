@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<h1>Login</h1>
+<form class="stack" action="/login" method="post">
+  <label>Email</label>
+  <input type="email" name="email" required>
+  <label>Password</label>
+  <input type="password" name="password" required>
+  <button type="submit">Masuk</button>
+</form>
+<p class="muted" style="margin-top:.8rem">
+  Belum punya akun? <a href="/register">Daftar</a> · <a href="/forgot">Lupa password?</a>
+</p>
+{% endblock %}

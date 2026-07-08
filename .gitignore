@@ -1,0 +1,52 @@
+# === Vuln Geeks Shop — .gitignore ===
+
+# 🔒 KUNCI JAWABAN — TIDAK BOLEH di-commit ke branch utama (lihat CLAUDE.md §3/§10)
+SOLUTIONS.md
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Artefak "bocor" yang SENGAJA disajikan untuk W-A05b (bukan secret asli — data palsu)
+!lab_files/
+!lab_files/.env.bak
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+ENV/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Uploads / runtime artifacts (state yang di-reset oleh `make reset`)
+/data/
+/uploads/
+app/web/static/uploads/
+
+# DB SQLite lokal untuk preview/dev (bukan bagian repo)
+*.db
+*.sqlite3
+
+# Editor / OS / tooling lokal
+.claude/settings.local.json
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

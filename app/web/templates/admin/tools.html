@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Admin · Tools{% endblock %}
+{% block content %}
+<h1>Admin Tools · Cek Koneksi</h1>
+<p class="muted">Jalankan ping ke sebuah host untuk memeriksa konektivitas.</p>
+<form class="stack" action="/admin/tools/ping" method="post">
+  <label>Host</label>
+  <input type="text" name="host" value="{{ host or '' }}" placeholder="mis. 127.0.0.1" required>
+  <button type="submit">Ping</button>
+</form>
+
+{% if output is defined %}
+<h3 style="margin-top:1.4rem">Output</h3>
+<pre class="card" style="white-space:pre-wrap; overflow:auto">{{ output }}</pre>
+{% endif %}
+{% endblock %}

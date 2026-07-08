@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Daftar{% endblock %}
+{% block content %}
+<h1>Daftar Akun</h1>
+<form class="stack" action="/register" method="post">
+  <label>Nama</label>
+  <input type="text" name="name" required>
+  <label>Email</label>
+  <input type="email" name="email" required>
+  <label>Password (min. 6 karakter)</label>
+  <input type="password" name="password" minlength="6" required>
+  <button type="submit">Daftar</button>
+</form>
+<p class="muted" style="margin-top:.8rem">Sudah punya akun? <a href="/login">Login</a></p>
+{% endblock %}

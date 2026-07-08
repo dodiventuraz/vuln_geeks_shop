@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ APP_NAME }}{% endblock %} · {{ APP_NAME }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- REQ-S2: banner peringatan lab wajib tampil permanen -->
+  <div class="lab-banner">⚠️ {{ LAB_WARNING }}</div>
+
+  {% if challenges.enabled("web.W-A03b") %}
+  {# LAB-VULN: W-A03b — "rahasia" yang bisa dicuri lewat XSS (payload membaca window.LAB_XSS_FLAG) #}
+  <script>window.LAB_XSS_FLAG = "{{ challenges.flag('web.W-A03b') }}";</script>
+  {% endif %}
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/"><span class="brand-mark">🛒</span> {{ APP_NAME }}</a>
+      <form class="search" action="/" method="get" role="search">
+        <input type="text" name="q" placeholder="Cari produk…" value="{{ q or '' }}" aria-label="Cari produk">
+        <button type="submit">Cari</button>
+      </form>
+      <nav class="nav">
+        <a href="/cart">Keranjang</a>
+        <a href="/wishlist">Wishlist</a>
+        <a href="/greeting">Kartu</a>
+        <a href="/scoreboard">Scoreboard</a>
+        {% if user %}
+          <a href="/orders">Order</a>
+          <a href="/preferences">Preferensi</a>
+          <a class="nav-user" href="/profile">{{ user.name }}</a>
+          {% if user.role == 'admin' %}<a class="admin-link" href="/admin">Admin</a>{% endif %}
+          <a class="nav-cta" href="/logout">Logout</a>
+        {% else %}
+          <a href="/login">Login</a>
+          <a class="nav-cta" href="/register">Daftar</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+    {% if saved %}<div class="alert ok">Tersimpan.</div>{% endif %}
+    {% if flag %}<div class="flag-banner">🚩 Exploit berhasil! {{ flag }}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p><strong>{{ APP_NAME }}</strong> — lab latihan pentest non-produksi.</p>
+      <p class="footer-warn">⚠️ Authorized testing only. Jangan deploy ke jaringan publik.</p>
+    </div>
+  </footer>
+</body>
+</html>

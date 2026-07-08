@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Import Preferensi{% endblock %}
+{% block content %}
+<h1>Import Preferensi (YAML)</h1>
+<p class="muted">Tempel konfigurasi preferensi (format YAML) untuk memulihkan pengaturan.</p>
+<form class="stack" action="/preferences/import" method="post">
+  <label>Data YAML</label>
+  <textarea name="data" rows="4" required>{{ data or '' }}</textarea>
+  <button type="submit">Import</button>
+</form>
+
+{% if result is defined and result is not none %}
+<h3 style="margin-top:1.4rem">Hasil parse</h3>
+<pre class="card" style="white-space:pre-wrap; overflow:auto">{{ result }}</pre>
+{% endif %}
+{% endblock %}

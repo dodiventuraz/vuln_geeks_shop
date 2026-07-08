@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Invoice #{{ order.id }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Invoice #{{ order.id }}</h1>
+  <p class="muted">{{ APP_NAME }} · {{ order.created_at.strftime('%Y-%m-%d %H:%M') if order.created_at else '' }}</p>
+  <p><strong>Pelanggan:</strong> {{ order.user.name }} ({{ order.user.email }})</p>
+  {% if order.address %}<p><strong>Kirim ke:</strong> {{ order.address.line1 }}, {{ order.address.city }} {{ order.address.postal_code }}</p>{% endif %}
+  <table>
+    <thead><tr><th>Produk</th><th>Harga</th><th>Qty</th><th>Subtotal</th></tr></thead>
+    <tbody>
+      {% for it in order.items %}
+      <tr><td>{{ it.product_name }}</td><td>Rp {{ '%.2f'|format(it.unit_price) }}</td><td>{{ it.quantity }}</td><td>Rp {{ '%.2f'|format(it.unit_price * it.quantity) }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p>Subtotal: Rp {{ '%.2f'|format(order.subtotal) }}</p>
+  {% if order.discount and order.discount > 0 %}<p>Diskon: −Rp {{ '%.2f'|format(order.discount) }}</p>{% endif %}
+  <p class="price">TOTAL: Rp {{ '%.2f'|format(order.total) }}</p>
+  <p class="muted">Status: {{ 'LUNAS' if order.paid else 'BELUM BAYAR' }} · Ref: {{ order.payment_ref or '—' }}</p>
+</div>
+{% endblock %}

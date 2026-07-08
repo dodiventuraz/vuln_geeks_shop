@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Admin · Order{% endblock %}
+{% block content %}
+<h1>Kelola Order</h1>
+<table>
+  <thead><tr><th>#</th><th>User</th><th>Total</th><th>Status</th><th>Ubah</th></tr></thead>
+  <tbody>
+    {% for o in orders %}
+    <tr>
+      <td>{{ o.id }}</td>
+      <td>{{ o.user.email }}</td>
+      <td>Rp {{ '%.2f'|format(o.total) }}</td>
+      <td>{{ o.status }}</td>
+      <td>
+        <form action="/admin/orders/{{ o.id }}/status" method="post" style="display:flex; gap:.3rem">
+          <select name="status">
+            {% for s in ['pending','paid','cancelled'] %}
+            <option value="{{ s }}" {% if o.status == s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">Set</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

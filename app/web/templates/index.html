@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Katalog{% endblock %}
+{% block content %}
+{% if not q %}
+<div class="hero">
+  <h1>Belanja gadget & merch geek 🧑‍💻</h1>
+  <p class="muted">Keyboard mekanik, headphone, buku, hoodie, dan lainnya — semua di satu tempat.</p>
+</div>
+{% endif %}
+
+<div class="categories">
+  <a class="chip {% if not active_category %}active{% endif %}" href="/">Semua</a>
+  {% for c in categories %}
+    <a class="chip {% if active_category and active_category.id == c.id %}active{% endif %}"
+       href="/?category={{ c.slug }}">{{ c.name }}</a>
+  {% endfor %}
+</div>
+
+{% if q %}
+  {% if challenges.enabled("web.W-A03b") %}
+  {# LAB-VULN: W-A03b Reflected XSS (intentional) — parameter q dipantulkan tanpa escape. #}
+  <p class="muted">Hasil pencarian untuk "{{ q | safe }}" — {{ products|length }} produk.</p>
+  {% else %}
+  <p class="muted">Hasil pencarian untuk "{{ q }}" — {{ products|length }} produk.</p>
+  {% endif %}
+{% endif %}
+
+<div class="grid">
+  {% for p in products %}
+  <div class="card">
+    <a href="/product/{{ p.id }}">
+      {% if p.image_path %}<img class="thumb" src="/{{ p.image_path }}" alt="{{ p.name }}">
+      {% else %}<div class="thumb">{{ product_thumbnail(p) }}</div>{% endif %}
+    </a>
+    <h3><a href="/product/{{ p.id }}">{{ p.name }}</a></h3>
+    <p class="muted">Stok: {{ p.stock }}</p>
+    <div class="card-foot">
+      <span class="price">Rp {{ '%.2f'|format(p.price) }}</span>
+      <a class="btn" href="/product/{{ p.id }}">Detail</a>
+    </div>
+  </div>
+  {% else %}
+  <p class="muted">Tidak ada produk.</p>
+  {% endfor %}
+</div>
+{% endblock %}

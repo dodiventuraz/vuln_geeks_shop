@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Admin · Produk{% endblock %}
+{% block content %}
+<h1>Kelola Produk</h1>
+
+{% if ssrf_preview is defined and ssrf_preview is not none %}
+<h3>Respons import URL</h3>
+<pre class="card" style="white-space:pre-wrap; overflow:auto">{{ ssrf_preview }}</pre>
+{% endif %}
+
+<h3>Tambah produk</h3>
+<form class="stack" action="/admin/products/create" method="post">
+  <label>Nama</label><input type="text" name="name" required>
+  <label>Harga</label><input type="text" name="price" value="0.00">
+  <label>Stok</label><input type="number" name="stock" value="0">
+  <label>Deskripsi</label><textarea name="description" rows="2"></textarea>
+  <label>Kategori</label>
+  <select name="category_id">
+    <option value="">— tanpa kategori —</option>
+    {% for c in categories %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+  </select>
+  <button type="submit">Buat</button>
+</form>
+
+<h3 style="margin-top:1.6rem">Daftar produk</h3>
+<table>
+  <thead><tr><th>ID</th><th>Nama</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead>
+  <tbody>
+    {% for p in products %}
+    <tr>
+      <td>{{ p.id }}</td>
+      <td>{{ p.name }}</td>
+      <td>Rp {{ '%.2f'|format(p.price) }}</td>
+      <td>{{ p.stock }}</td>
+      <td style="display:flex; gap:.4rem; flex-wrap:wrap">
+        <form action="/admin/products/{{ p.id }}/update" method="post" style="display:flex; gap:.3rem; flex-wrap:wrap">
+          <input type="text" name="name" value="{{ p.name }}" style="width:130px">
+          <input type="text" name="price" value="{{ '%.2f'|format(p.price) }}" style="width:80px">
+          <input type="number" name="stock" value="{{ p.stock }}" style="width:70px">
+          <input type="hidden" name="description" value="{{ p.description }}">
+          <button type="submit">Simpan</button>
+        </form>
+        <form action="/admin/products/{{ p.id }}/import-image" method="post" style="display:flex; gap:.3rem">
+          <input type="text" name="image_url" placeholder="URL gambar" style="width:150px">
+          <button type="submit">Import</button>
+        </form>
+        <form action="/admin/products/{{ p.id }}/image" method="post" enctype="multipart/form-data" style="display:flex; gap:.3rem">
+          <input type="file" name="image" accept="image/*">
+          <button type="submit">Upload</button>
+        </form>
+        <form action="/admin/products/{{ p.id }}/delete" method="post">
+          <button class="btn btn-danger" type="submit">Hapus</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

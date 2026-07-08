@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Admin · User{% endblock %}
+{% block content %}
+<h1>Kelola User</h1>
+<table>
+  <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Role</th><th>Verified</th><th>Ubah role</th></tr></thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.id }}</td>
+      <td>{{ u.name }}</td>
+      <td>{{ u.email }}</td>
+      <td>{{ u.role }}</td>
+      <td>{{ u.is_verified }}</td>
+      <td>
+        <form action="/admin/users/{{ u.id }}/role" method="post" style="display:flex; gap:.3rem">
+          <select name="role">
+            {% for r in ['guest','customer','admin'] %}
+            <option value="{{ r }}" {% if u.role == r %}selected{% endif %}>{{ r }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">Set</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

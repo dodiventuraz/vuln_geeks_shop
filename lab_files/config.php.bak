@@ -1,0 +1,6 @@
+<?php
+// Artefak backup lain yang bocor (lab). Data PALSU.
+$DB_HOST = "db";
+$DB_USER = "vuln";
+$DB_PASS = "vuln";
+// catatan: file .bak sering ketinggalan saat deploy → jangan disajikan publik.

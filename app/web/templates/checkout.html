@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<h1>Checkout</h1>
+{% if cart.items %}
+<div class="row">
+  <div style="flex:1; min-width:280px">
+    <h3>Ringkasan</h3>
+    <table>
+      {% for it in cart.items %}
+      <tr><td>{{ it.product.name }} × {{ it.quantity }}</td><td>Rp {{ '%.2f'|format(it.product.price * it.quantity) }}</td></tr>
+      {% endfor %}
+    </table>
+    <p class="price">Subtotal: Rp {{ '%.2f'|format(totals.subtotal) }}</p>
+  </div>
+  <div style="flex:1; min-width:280px">
+    <form class="stack" action="/checkout" method="post">
+      <label>Alamat pengiriman</label>
+      <select name="address_id">
+        <option value="">— pilih alamat —</option>
+        {% for a in addresses %}
+        <option value="{{ a.id }}">{{ a.line1 }}, {{ a.city }} {{ a.postal_code }}</option>
+        {% endfor %}
+      </select>
+      <label>Kode kupon (opsional)</label>
+      <input type="text" name="coupon_code" placeholder="mis. WELCOME10">
+      <p class="muted">Pembayaran via gateway <strong>mock</strong> (selalu sukses di lab).</p>
+      <button type="submit">Bayar Sekarang</button>
+    </form>
+    {% if not addresses %}<p class="muted">Belum ada alamat — tambahkan di <a href="/profile">Profil</a>.</p>{% endif %}
+  </div>
+</div>
+{% else %}
+<p class="muted">Keranjang kosong.</p>
+{% endif %}
+{% endblock %}
