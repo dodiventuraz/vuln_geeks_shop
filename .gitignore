@@ -3,6 +3,10 @@
 # 🔒 KUNCI JAWABAN — TIDAK BOLEH di-commit ke branch utama (lihat CLAUDE.md §3/§10)
 SOLUTIONS.md
 
+# Dokumen kerja/internal — disimpan lokal, tidak di-publish ke repo
+CLAUDE.md
+PRD.md
+
 # Environment / secrets
 .env
 .env.*
