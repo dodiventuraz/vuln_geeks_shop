@@ -17,8 +17,8 @@
 </div>
 
 {% if q %}
-  {% if challenges.enabled("web.W-A03b") %}
-  {# LAB-VULN: W-A03b Reflected XSS (intentional) — parameter q dipantulkan tanpa escape. #}
+  {% if challenges.enabled("web.Web-A03-b") %}
+  {# LAB-VULN: Web-A03-b Reflected XSS (intentional) — parameter q dipantulkan tanpa escape. #}
   <p class="muted">Hasil pencarian untuk "{{ q | safe }}" — {{ products|length }} produk.</p>
   {% else %}
   <p class="muted">Hasil pencarian untuk "{{ q }}" — {{ products|length }} produk.</p>

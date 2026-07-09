@@ -52,14 +52,14 @@ services:
   # --- Stub internal (target masa depan; P0 hanya placeholder di labnet) ---
 
   internal-metadata:
-    # Target SSRF internal (W-A10 / A-7). Hanya terjangkau dari jaringan internal.
+    # Target SSRF internal (Web-A10 / API-A7). Hanya terjangkau dari jaringan internal.
     image: hashicorp/http-echo:1.0
     command: ["-listen=:80", "-text=internal-metadata secret: FLAG{ssrf_import}"]
     networks:
       - labnet
 
   payment-mock:
-    # Gateway pembayaran mock (A-10). P0: stub http sederhana, tidak diekspos ke host.
+    # Gateway pembayaran mock (API-A10). P0: stub http sederhana, tidak diekspos ke host.
     image: hashicorp/http-echo:1.0
     command: ["-listen=:80", "-text=payment-mock stub — placeholder P0"]
     networks:

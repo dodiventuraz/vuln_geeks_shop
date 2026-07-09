@@ -2,9 +2,9 @@
 
 P1 AMAN: user hanya bisa mengubah field profilnya sendiri (name/email).
 Kerentanan (toggle):
-- W-A02a: bila enabled, panel profil membocorkan `password_hash` (md5 tak ber-salt).
-- W-A02b: bila enabled, kartu pembayaran disimpan & ditampilkan plaintext (PII).
-TODO[P3] A-3a: mass assignment via API `PATCH /api/user` menyusul di fase P3.
+- Web-A02-a: bila enabled, panel profil membocorkan `password_hash` (md5 tak ber-salt).
+- Web-A02-b: bila enabled, kartu pembayaran disimpan & ditampilkan plaintext (PII).
+TODO[P3] API-A3-a: mass assignment via API `PATCH /api/user` menyusul di fase P3.
 """
 
 from __future__ import annotations
@@ -25,21 +25,21 @@ from app.models import Address
 
 router = APIRouter(tags=["web-profile"])
 
-# "Rahasia" yang bisa dibaca lewat insecure deserialization (W-A08).
-os.environ.setdefault("LAB_DESER_FLAG", challenges.flag("web.W-A08") or "")
+# "Rahasia" yang bisa dibaca lewat insecure deserialization (Web-A08).
+os.environ.setdefault("LAB_DESER_FLAG", challenges.flag("web.Web-A08") or "")
 
 
 def _profile_ctx(request: Request, user, **extra) -> dict:
     ctx = {"request": request, "user": user}
-    # W-A02a: bocorkan hash md5 (crackable) di panel profil bila enabled.
+    # Web-A02-a: bocorkan hash md5 (crackable) di panel profil bila enabled.
     ctx["weak_hash"] = (
         user.password_hash
-        if challenges.enabled("web.W-A02a") and (user.password_hash or "").startswith("md5$")
+        if challenges.enabled("web.Web-A02-a") and (user.password_hash or "").startswith("md5$")
         else None
     )
-    # W-A02b: tandai bila kartu tersimpan plaintext (bukan hasil mask).
+    # Web-A02-b: tandai bila kartu tersimpan plaintext (bukan hasil mask).
     ctx["pii_plaintext"] = bool(
-        challenges.enabled("web.W-A02b")
+        challenges.enabled("web.Web-A02-b")
         and user.card_number
         and not user.card_number.startswith("****")
     )
@@ -91,8 +91,8 @@ def save_billing(
     db: Session = Depends(get_db),
     user=Depends(require_login),
 ):
-    if challenges.enabled("web.W-A02b"):
-        # LAB-VULN: W-A02b (intentional) — simpan nomor kartu (PAN) plaintext di DB.
+    if challenges.enabled("web.Web-A02-b"):
+        # LAB-VULN: Web-A02-b (intentional) — simpan nomor kartu (PAN) plaintext di DB.
         user.card_number = card_number
     else:
         # AMAN: tokenisasi — jangan simpan PAN penuh, cukup mask + 4 digit terakhir.
@@ -113,12 +113,12 @@ def preferences_import(
     data: str = Form(...),
     user=Depends(require_login),
 ):
-    """Restore preferensi dari blob YAML. Target W-A08 (insecure deserialization)."""
+    """Restore preferensi dari blob YAML. Target Web-A08 (insecure deserialization)."""
     result = None
     error = None
     try:
-        if challenges.enabled("web.W-A08"):
-            # LAB-VULN: W-A08 (intentional) — loader penuh mengeksekusi tag Python
+        if challenges.enabled("web.Web-A08"):
+            # LAB-VULN: Web-A08 (intentional) — loader penuh mengeksekusi tag Python
             # (mis. !!python/object/apply:os.system / os.getenv) → RCE primitive.
             result = yaml.load(data, Loader=yaml.UnsafeLoader)  # noqa: S506
         else:

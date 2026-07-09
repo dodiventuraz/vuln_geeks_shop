@@ -1,7 +1,7 @@
 """Keamanan: hashing password, JWT, dan dependency current-user.
 
 P1: SEMUA jalur di sini AMAN (praktik benar). Kelemahan yang disengaja
-(md5 tanpa salt di W-A02a, JWT alg:none di W-A08/A-2) baru ditambahkan di fase
+(md5 tanpa salt di Web-A02-a, JWT alg:none di Web-A08/API-A2) baru ditambahkan di fase
 P2/P3 sebagai cabang `if challenges.enabled(...)`.
 """
 
@@ -30,8 +30,8 @@ from app.core.db import get_db
 
 
 def hash_password(password: str, *, iterations: int | None = None) -> str:
-    if challenges.enabled("web.W-A02a"):
-        # LAB-VULN: W-A02a weak hash (intentional) — md5 tanpa salt (cepat & reversible).
+    if challenges.enabled("web.Web-A02-a"):
+        # LAB-VULN: Web-A02-a weak hash (intentional) — md5 tanpa salt (cepat & reversible).
         return "md5$" + hashlib.md5(password.encode("utf-8")).hexdigest()  # noqa: S324
     iters = iterations or settings.pbkdf2_iterations
     salt = secrets.token_bytes(16)
@@ -58,7 +58,7 @@ def verify_password(password: str, stored: str) -> bool:
 
 # --------------------------------------------------------------------------- #
 # Token reset password.
-# AMAN: secrets (tak terprediksi). W-A07b memakai `random` ber-seed publik.
+# AMAN: secrets (tak terprediksi). Web-A07-b memakai `random` ber-seed publik.
 # --------------------------------------------------------------------------- #
 
 
@@ -67,7 +67,7 @@ def generate_token(nbytes: int = 32) -> str:
 
 
 def predictable_reset_token(user_id: int) -> str:
-    """LAB-VULN: W-A07b — token reset dari `random` ber-seed nilai publik (user id).
+    """LAB-VULN: Web-A07-b — token reset dari `random` ber-seed nilai publik (user id).
 
     Karena seed diketahui/di-enum, penyerang bisa menghitung token yang sama.
     """
@@ -76,7 +76,7 @@ def predictable_reset_token(user_id: int) -> str:
 
 
 def make_reset_token(user_id: int) -> str:
-    if challenges.enabled("web.W-A07b"):
+    if challenges.enabled("web.Web-A07-b"):
         return predictable_reset_token(user_id)
     return generate_token()
 
@@ -101,7 +101,7 @@ def create_access_token(*, subject: str | int, role: str, extra: dict[str, Any] 
 
 def decode_access_token(token: str) -> dict[str, Any]:
     # AMAN: pin algoritma & verifikasi tanda tangan.
-    # TODO[P3] A-2 / W-A08: cabang rentan (terima alg:none / secret lemah) diselipkan di sini.
+    # TODO[P3] API-A2 / Web-A08: cabang rentan (terima alg:none / secret lemah) diselipkan di sini.
     return jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
 
 
@@ -129,7 +129,7 @@ def require_login(user=Depends(get_current_user)):
 
 
 def require_admin(user=Depends(require_login)):
-    # AMAN: pengecekan role dipasang. (W-A01b/W-A01c/A-5 akan melepas ini secara selektif di P2/P3.)
+    # AMAN: pengecekan role dipasang. (Web-A01-b/Web-A01-c/API-A5 akan melepas ini secara selektif di P2/P3.)
     if user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Butuh hak admin."
@@ -150,14 +150,14 @@ def get_user_by_email(db: Session, email: str) -> Optional[Any]:
 def find_user_for_login(db: Session, email: str) -> Optional[Any]:
     """Lookup user saat login web.
 
-    W-A03a mengontrol apakah query dirakit lewat f-string mentah (SQLi) atau
+    Web-A03-a mengontrol apakah query dirakit lewat f-string mentah (SQLi) atau
     parameterized. Cabang rentan memungkinkan payload `' OR '1'='1' -- ` mengembalikan
     baris user meski email tak cocok → dipakai route login untuk mendeteksi bypass.
     """
     from app.models import User
 
-    if challenges.enabled("web.W-A03a"):
-        # LAB-VULN: W-A03a SQLi login (intentional) — input email dirakit mentah ke query.
+    if challenges.enabled("web.Web-A03-a"):
+        # LAB-VULN: Web-A03-a SQLi login (intentional) — input email dirakit mentah ke query.
         sql = text(f"SELECT * FROM users WHERE email = '{email}'")  # noqa: S608
         row = db.execute(sql).first()
         return db.get(User, row.id) if row else None

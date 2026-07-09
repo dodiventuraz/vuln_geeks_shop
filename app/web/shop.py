@@ -2,8 +2,8 @@
 review, wishlist.
 
 P1 AMAN: pencarian pakai query parameterized (ORM `ilike` dengan bind), review
-dirender dengan autoescape Jinja2. Titik SQLi search (W-A03a), Reflected/Stored XSS
-(W-A03b) diberi penanda TODO untuk fase P2.
+dirender dengan autoescape Jinja2. Titik SQLi search (Web-A03-a), Reflected/Stored XSS
+(Web-A03-b) diberi penanda TODO untuk fase P2.
 """
 
 from __future__ import annotations
@@ -37,8 +37,8 @@ def index(
             select(Category).where(Category.slug == category)
         ).scalar_one_or_none()
 
-    if q and challenges.enabled("web.W-A03a"):
-        # LAB-VULN: W-A03a SQLi search (intentional) — kolom pencarian dirakit mentah.
+    if q and challenges.enabled("web.Web-A03-a"):
+        # LAB-VULN: Web-A03-a SQLi search (intentional) — kolom pencarian dirakit mentah.
         sql = text(f"SELECT id FROM products WHERE name LIKE '%{q}%'")  # noqa: S608
         ids = [r.id for r in db.execute(sql).fetchall()]
         products = [db.get(Product, i) for i in ids]
@@ -82,13 +82,13 @@ def greeting_preview(
 ):
     """Pratinjau "kartu ucapan hadiah".
 
-    W-A03c mengontrol apakah pesan user dirender sebagai template Jinja2.
+    Web-A03-c mengontrol apakah pesan user dirender sebagai template Jinja2.
     """
-    if challenges.enabled("web.W-A03c"):
-        # LAB-VULN: W-A03c SSTI (intentional) — string user dirender sebagai template.
+    if challenges.enabled("web.Web-A03-c"):
+        # LAB-VULN: Web-A03-c SSTI (intentional) — string user dirender sebagai template.
         # Konteks memuat `flag`, jadi payload `{{ flag }}` membocorkannya; `{{7*7}}` → 49.
         try:
-            rendered = Template(message).render(user=user, flag=challenges.flag("web.W-A03c"))
+            rendered = Template(message).render(user=user, flag=challenges.flag("web.Web-A03-c"))
         except Exception as exc:  # noqa: BLE001 — lab: tampilkan error render apa adanya
             rendered = f"[render error] {exc}"
     else:
@@ -134,7 +134,7 @@ def add_review(
     product = db.get(Product, product_id)
     if product is not None:
         # AMAN: body disimpan apa adanya lalu dirender dengan autoescape.
-        # TODO[P2] W-A03b: Stored XSS dibuka dengan `| safe` di template review (fase P2).
+        # TODO[P2] Web-A03-b: Stored XSS dibuka dengan `| safe` di template review (fase P2).
         rating = max(1, min(5, int(rating)))
         db.add(Review(product_id=product_id, user_id=user.id, rating=rating, body=body))
         db.commit()

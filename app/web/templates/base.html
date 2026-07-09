@@ -10,9 +10,9 @@
   <!-- REQ-S2: banner peringatan lab wajib tampil permanen -->
   <div class="lab-banner">⚠️ {{ LAB_WARNING }}</div>
 
-  {% if challenges.enabled("web.W-A03b") %}
-  {# LAB-VULN: W-A03b — "rahasia" yang bisa dicuri lewat XSS (payload membaca window.LAB_XSS_FLAG) #}
-  <script>window.LAB_XSS_FLAG = "{{ challenges.flag('web.W-A03b') }}";</script>
+  {% if challenges.enabled("web.Web-A03-b") %}
+  {# LAB-VULN: Web-A03-b — "rahasia" yang bisa dicuri lewat XSS (payload membaca window.LAB_XSS_FLAG) #}
+  <script>window.LAB_XSS_FLAG = "{{ challenges.flag('web.Web-A03-b') }}";</script>
   {% endif %}
 
   <header class="topbar">

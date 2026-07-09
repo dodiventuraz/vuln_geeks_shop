@@ -50,7 +50,7 @@ app = FastAPI(
 
 # --- Middleware (urutan: header lab terluar → CORS/security → session) ---
 app.add_middleware(LabWarningMiddleware)
-# CORS + security headers. Bercabang di W-A05c (lihat CorsSecurityMiddleware).
+# CORS + security headers. Bercabang di Web-A05-c (lihat CorsSecurityMiddleware).
 app.add_middleware(CorsSecurityMiddleware)
 app.add_middleware(
     SessionMiddleware,
@@ -60,17 +60,17 @@ app.add_middleware(
 )
 
 
-# --- Exception handler: verbose vs generic (target W-A05a) ---
+# --- Exception handler: verbose vs generic (target Web-A05-a) ---
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception):
-    if challenges.enabled("web.W-A05a"):
-        # LAB-VULN: W-A05a verbose error/debug (intentional) — bocorkan traceback & detail internal.
+    if challenges.enabled("web.Web-A05-a"):
+        # LAB-VULN: Web-A05-a verbose error/debug (intentional) — bocorkan traceback & detail internal.
         tb = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
         detail = (
             f"{type(exc).__name__}: {exc}\n\n{tb}\n"
             f"python={platform.python_version()}\n"
             f"database_url={settings.database_url}\n"
-            f"internal-token={challenges.flag('web.W-A05a')}"
+            f"internal-token={challenges.flag('web.Web-A05-a')}"
         )
         return HTMLResponse(
             f"<h1>500 Internal Server Error</h1><pre>{escape(detail)}</pre>", status_code=500
@@ -117,18 +117,18 @@ app.include_router(api_v2.router)
 
 @app.get("/debug/error", tags=["debug"])
 def debug_error():
-    """Endpoint pemicu error tak tertangani (untuk mendemokan W-A05a)."""
+    """Endpoint pemicu error tak tertangani (untuk mendemokan Web-A05-a)."""
     raise RuntimeError("boom: contoh error tak tertangani untuk lab")
 
 
 @app.get("/debug/deps", tags=["debug"])
 def debug_deps():
-    """Ungkap versi dependensi (target W-A06).
+    """Ungkap versi dependensi (target Web-A06).
 
     Saat enabled, bocorkan daftar versi paket (memudahkan fingerprint komponen
     ber-CVE seperti Jinja2). Saat disabled → 404.
     """
-    if not challenges.enabled("web.W-A06"):
+    if not challenges.enabled("web.Web-A06"):
         return JSONResponse({"detail": "Not Found"}, status_code=404)
     pkgs = {}
     for name in ("jinja2", "fastapi", "sqlalchemy", "pyjwt", "python-multipart"):
@@ -136,8 +136,8 @@ def debug_deps():
             pkgs[name] = version(name)
         except PackageNotFoundError:
             pkgs[name] = None
-    # LAB-VULN: W-A06 — disclosure versi komponen (ber-CVE) + flag.
-    return JSONResponse({"dependencies": pkgs, "flag": challenges.flag("web.W-A06")})
+    # LAB-VULN: Web-A06 — disclosure versi komponen (ber-CVE) + flag.
+    return JSONResponse({"dependencies": pkgs, "flag": challenges.flag("web.Web-A06")})
 
 
 @app.get("/health", tags=["ops"])

@@ -31,8 +31,8 @@
 {% for r in reviews %}
   <div class="review">
     <strong>{{ r.user.name }}</strong> <span class="muted">· {{ '★' * r.rating }}</span>
-    {% if challenges.enabled("web.W-A03b") %}
-    {# LAB-VULN: W-A03b Stored XSS (intentional) — body review dirender tanpa escape. #}
+    {% if challenges.enabled("web.Web-A03-b") %}
+    {# LAB-VULN: Web-A03-b Stored XSS (intentional) — body review dirender tanpa escape. #}
     <p>{{ r.body | safe }}</p>
     {% else %}
     <p>{{ r.body }}</p>  {# AMAN: autoescape aktif. #}

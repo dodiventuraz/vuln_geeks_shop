@@ -1,7 +1,7 @@
 """Route keranjang & checkout (SSR).
 
-P1 AMAN: kuantitas dipaksa positif (W-A04a nanti melonggarkan), checkout berurutan
-dalam satu transaksi (W-A04b race condition menyusul di P2).
+P1 AMAN: kuantitas dipaksa positif (Web-A04-a nanti melonggarkan), checkout berurutan
+dalam satu transaksi (Web-A04-b race condition menyusul di P2).
 """
 
 from __future__ import annotations
@@ -115,9 +115,9 @@ def checkout_submit(
             },
             status_code=400,
         )
-    # W-A04a: total negatif (dari qty negatif) → bukti manipulasi business logic.
-    if challenges.enabled("web.W-A04a") and order.total < Decimal("0"):
-        request.session["lab_flag"] = challenges.flag("web.W-A04a")
+    # Web-A04-a: total negatif (dari qty negatif) → bukti manipulasi business logic.
+    if challenges.enabled("web.Web-A04-a") and order.total < Decimal("0"):
+        request.session["lab_flag"] = challenges.flag("web.Web-A04-a")
     return RedirectResponse(f"/orders/{order.id}", status_code=303)
 
 
@@ -127,10 +127,10 @@ def coupon_redeem(
     db: Session = Depends(get_db),
     user=Depends(require_login),
 ):
-    """Redeem kupon (satu-per-request). Target W-A04b (race condition/TOCTOU)."""
+    """Redeem kupon (satu-per-request). Target Web-A04-b (race condition/TOCTOU)."""
     success = services.redeem_coupon(db, code)
     body: dict = {"success": success}
-    if success and challenges.enabled("web.W-A04b"):
+    if success and challenges.enabled("web.Web-A04-b"):
         # Bukti dapat diperbanyak melewati batas via race (lihat exploit-test).
-        body["flag"] = challenges.flag("web.W-A04b")
+        body["flag"] = challenges.flag("web.Web-A04-b")
     return JSONResponse(body)

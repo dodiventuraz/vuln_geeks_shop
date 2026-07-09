@@ -40,16 +40,18 @@ def _override_get_db():
 @pytest.fixture(autouse=True)
 def _fresh_schema():
     """Skema bersih per test."""
-    from app.core import audit, ratelimit
+    from app.core import audit, promo, ratelimit
 
     Base.metadata.create_all(bind=_engine)
     fastapi_app.dependency_overrides[get_db] = _override_get_db
     ratelimit.clear_all()
     audit.clear()
+    promo.clear()
     yield
     fastapi_app.dependency_overrides.clear()
     ratelimit.clear_all()
     audit.clear()
+    promo.clear()
     Base.metadata.drop_all(bind=_engine)
 
 

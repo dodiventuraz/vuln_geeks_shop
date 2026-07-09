@@ -2,9 +2,9 @@
 import produk dari URL.
 
 Kerentanan (toggle via challenges.yaml):
-- W-A01b: forced browsing ke area admin — role check tak dipasang pada halaman view.
-- W-A01c: missing function-level check pada mutasi produk (update/hapus).
-- W-A10 (fase berikutnya): SSRF via import URL — masih AMAN (validasi tujuan) di batch ini.
+- Web-A01-b: forced browsing ke area admin — role check tak dipasang pada halaman view.
+- Web-A01-c: missing function-level check pada mutasi produk (update/hapus).
+- Web-A10 (fase berikutnya): SSRF via import URL — masih AMAN (validasi tujuan) di batch ini.
 """
 
 from __future__ import annotations
@@ -31,8 +31,8 @@ from app.models import Category, Order, Product, User
 
 router = APIRouter(prefix="/admin", tags=["web-admin"])
 
-# "Rahasia" yang bisa dibaca lewat command injection (W-A03d): echo $LAB_CMD_FLAG.
-os.environ.setdefault("LAB_CMD_FLAG", challenges.flag("web.W-A03d") or "")
+# "Rahasia" yang bisa dibaca lewat command injection (Web-A03-d): echo $LAB_CMD_FLAG.
+os.environ.setdefault("LAB_CMD_FLAG", challenges.flag("web.Web-A03-d") or "")
 
 _HOST_RE = re.compile(r"^[A-Za-z0-9.\-]+$")
 
@@ -45,9 +45,9 @@ def _ping_count_flag() -> str:
 # Access guards (branching)
 # --------------------------------------------------------------------------- #
 def admin_view_access(user=Depends(require_login)):
-    """Akses halaman view admin. W-A01b mengontrol apakah role dicek."""
-    if challenges.enabled("web.W-A01b"):
-        # LAB-VULN: W-A01b (intentional) — dependency role admin "tak dipasang":
+    """Akses halaman view admin. Web-A01-b mengontrol apakah role dicek."""
+    if challenges.enabled("web.Web-A01-b"):
+        # LAB-VULN: Web-A01-b (intentional) — dependency role admin "tak dipasang":
         # user biasa yang login bisa forced-browse ke area admin.
         return user
     if user.role != "admin":
@@ -56,9 +56,9 @@ def admin_view_access(user=Depends(require_login)):
 
 
 def product_mutate_access(user=Depends(require_login)):
-    """Akses mutasi produk (update/hapus). W-A01c mengontrol apakah role dicek."""
-    if challenges.enabled("web.W-A01c"):
-        # LAB-VULN: W-A01c (intentional) — mutasi produk tak memverifikasi peran pemanggil.
+    """Akses mutasi produk (update/hapus). Web-A01-c mengontrol apakah role dicek."""
+    if challenges.enabled("web.Web-A01-c"):
+        # LAB-VULN: Web-A01-c (intentional) — mutasi produk tak memverifikasi peran pemanggil.
         return user
     if user.role != "admin":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Butuh hak admin.")
@@ -88,13 +88,13 @@ def _products_page(request, db, user, *, flag=None, error=None, ssrf_preview=Non
 
 
 # --------------------------------------------------------------------------- #
-# Dashboard & daftar (view — dijaga admin_view_access, target W-A01b)
+# Dashboard & daftar (view — dijaga admin_view_access, target Web-A01-b)
 # --------------------------------------------------------------------------- #
 @router.get("", response_class=HTMLResponse)
 def dashboard(request: Request, db: Session = Depends(get_db), viewer=Depends(admin_view_access)):
     flag = None
-    if viewer.role != "admin" and challenges.enabled("web.W-A01b"):
-        flag = challenges.flag("web.W-A01b")  # bukti: non-admin membuka dashboard admin
+    if viewer.role != "admin" and challenges.enabled("web.Web-A01-b"):
+        flag = challenges.flag("web.Web-A01-b")  # bukti: non-admin membuka dashboard admin
     stats = {
         "products": db.scalar(select(func.count()).select_from(Product)),
         "users": db.scalar(select(func.count()).select_from(User)),
@@ -127,7 +127,7 @@ def orders(request: Request, db: Session = Depends(get_db), viewer=Depends(admin
 
 
 # --------------------------------------------------------------------------- #
-# Mutasi produk (update/hapus — target W-A01c)
+# Mutasi produk (update/hapus — target Web-A01-c)
 # --------------------------------------------------------------------------- #
 @router.post("/products/create")
 def product_create(
@@ -137,7 +137,7 @@ def product_create(
     description: str = Form(""),
     category_id: int | None = Form(None),
     db: Session = Depends(get_db),
-    admin=Depends(require_admin),  # AMAN (strict): create bukan target W-A01c.
+    admin=Depends(require_admin),  # AMAN (strict): create bukan target Web-A01-c.
 ):
     try:
         price_dec = Decimal(price)
@@ -177,8 +177,8 @@ def product_update(
         product.stock = int(stock)
         product.description = description
         db.commit()
-    if actor.role != "admin" and challenges.enabled("web.W-A01c"):
-        return _products_page(request, db, actor, flag=challenges.flag("web.W-A01c"))
+    if actor.role != "admin" and challenges.enabled("web.Web-A01-c"):
+        return _products_page(request, db, actor, flag=challenges.flag("web.Web-A01-c"))
     return RedirectResponse("/admin/products", status_code=303)
 
 
@@ -193,8 +193,8 @@ def product_delete(
     if product:
         db.delete(product)
         db.commit()
-    if actor.role != "admin" and challenges.enabled("web.W-A01c"):
-        return _products_page(request, db, actor, flag=challenges.flag("web.W-A01c"))
+    if actor.role != "admin" and challenges.enabled("web.Web-A01-c"):
+        return _products_page(request, db, actor, flag=challenges.flag("web.Web-A01-c"))
     return RedirectResponse("/admin/products", status_code=303)
 
 
@@ -228,8 +228,8 @@ def product_import_image(
     ssrf_preview = None
     if product:
         try:
-            if challenges.enabled("web.W-A10"):
-                # LAB-VULN: W-A10 SSRF (intentional) — ambil URL user tanpa validasi tujuan.
+            if challenges.enabled("web.Web-A10"):
+                # LAB-VULN: Web-A10 SSRF (intentional) — ambil URL user tanpa validasi tujuan.
                 preview, data = fetch_url_unsafe(image_url)
                 ssrf_preview = preview  # respons internal bocor ke penyerang
                 try:
@@ -253,7 +253,7 @@ def product_import_image(
 
 
 # --------------------------------------------------------------------------- #
-# Admin tools — network check (target W-A03d command injection)
+# Admin tools — network check (target Web-A03-d command injection)
 # --------------------------------------------------------------------------- #
 @router.get("/tools", response_class=HTMLResponse)
 def tools_form(request: Request, admin=Depends(require_admin)):
@@ -267,9 +267,9 @@ def tools_ping(
     admin=Depends(require_admin),
     db: Session = Depends(get_db),
 ):
-    """Utilitas 'cek koneksi (ping)'. W-A03d mengontrol pemakaian shell."""
-    if challenges.enabled("web.W-A03d"):
-        # LAB-VULN: W-A03d command injection (intentional) — input dirakit ke shell.
+    """Utilitas 'cek koneksi (ping)'. Web-A03-d mengontrol pemakaian shell."""
+    if challenges.enabled("web.Web-A03-d"):
+        # LAB-VULN: Web-A03-d command injection (intentional) — input dirakit ke shell.
         cmd = f"ping {_ping_count_flag()} 1 {host}"
         try:
             proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
@@ -311,7 +311,7 @@ def user_set_role(
     if target and role in {"guest", "customer", "admin"}:
         target.role = role
         db.commit()
-        # W-A09: perubahan peran = aksi sensitif; dicatat hanya bila logging tak "dimatikan".
+        # Web-A09: perubahan peran = aksi sensitif; dicatat hanya bila logging tak "dimatikan".
         audit.log_sensitive("role_change", actor_id=admin.id, target_id=target.id, role=role)
     return RedirectResponse("/admin/users", status_code=303)
 

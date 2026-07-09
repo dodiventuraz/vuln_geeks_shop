@@ -14,7 +14,7 @@ def test_scoreboard_loads(client: TestClient):
 def test_submit_correct_flag_marks_solved(client: TestClient):
     resp = client.post("/submit-flag", data={"flag": "FLAG{idor_orders}"}, follow_redirects=False)
     assert resp.status_code == 200
-    assert "web.W-A01a" in resp.text
+    assert "web.Web-A01-a" in resp.text
     assert "solved" in resp.text.lower()
     # Progres tersimpan di sesi berikutnya.
     again = client.get("/scoreboard")
@@ -29,4 +29,4 @@ def test_submit_wrong_flag_rejected(client: TestClient):
 
 def test_api_flag_accepted(client: TestClient):
     resp = client.post("/submit-flag", data={"flag": "FLAG{bola_orders}"}, follow_redirects=False)
-    assert "api.A-1" in resp.text
+    assert "api.API-A1" in resp.text

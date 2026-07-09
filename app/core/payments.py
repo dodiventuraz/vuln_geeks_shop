@@ -5,8 +5,8 @@ service `payment-mock`), charge memanggilnya; hasil DIVALIDASI sebelum dipercaya
 Bila tidak diset / tak terjangkau, fallback deterministik lokal (selalu sukses) agar
 lab & test tetap reproducible offline.
 
-TODO[P3] A-10: cabang RENTAN yang mempercayai respons pihak ketiga mentah-mentah
-diselipkan di sini, dijaga challenges.enabled("api.A-10").
+TODO[P3] API-A10: cabang RENTAN yang mempercayai respons pihak ketiga mentah-mentah
+diselipkan di sini, dijaga challenges.enabled("api.API-A10").
 """
 
 from __future__ import annotations

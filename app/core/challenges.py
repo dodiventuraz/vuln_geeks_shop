@@ -1,7 +1,7 @@
 """Loader `challenges.yaml` — mekanisme toggle kerentanan.
 
 Kontrak (CLAUDE.md §7): setiap kerentanan bisa dinyalakan/dimatikan, dan kode
-bercabang berdasarkan flag lewat `challenges.enabled("web.W-A03a")`.
+bercabang berdasarkan flag lewat `challenges.enabled("web.Web-A03-a")`.
 
 P0: hanya mekanismenya. Semua entri masih `enabled: false` dan belum ada
 cabang kode rentan yang membacanya.
@@ -20,8 +20,8 @@ from app.core.config import settings
 class Challenges:
     """Wrapper tipis di atas isi `challenges.yaml`.
 
-    Lookup memakai path bertitik, mis. `enabled("web.W-A03a")` membaca
-    `web -> W-A03a -> enabled`.
+    Lookup memakai path bertitik, mis. `enabled("web.Web-A03-a")` membaca
+    `web -> Web-A03-a -> enabled`.
     """
 
     def __init__(self, data: dict[str, Any] | None = None) -> None:

@@ -2,7 +2,7 @@
 
 P1: skema & relasi fungsional. Beberapa kolom sengaja disiapkan sebagai target
 kerentanan fase berikutnya (mis. `User.balance`/`role`/`is_verified` untuk mass
-assignment A-3a, `User.reset_token` untuk W-A07b). Di P1 semua dipakai secara AMAN.
+assignment API-A3-a, `User.reset_token` untuk Web-A07-b). Di P1 semua dipakai secara AMAN.
 """
 
 from __future__ import annotations
@@ -37,9 +37,9 @@ class User(Base):
     balance: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal("0.00"))
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     avatar_path: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    # Kartu pembayaran mock. W-A02b: saat enabled disimpan plaintext; saat aman di-mask (tokenize).
+    # Kartu pembayaran mock. Web-A02-b: saat enabled disimpan plaintext; saat aman di-mask (tokenize).
     card_number: Mapped[str | None] = mapped_column(String(64), nullable=True)
-    # Reset password — AMAN di P1 (token via secrets). W-A07b memakai kolom yang sama nanti.
+    # Reset password — AMAN di P1 (token via secrets). Web-A07-b memakai kolom yang sama nanti.
     reset_token: Mapped[str | None] = mapped_column(String(255), nullable=True)
     reset_token_expiry: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
@@ -85,7 +85,7 @@ class Review(Base):
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     rating: Mapped[int] = mapped_column(Integer, default=5)
-    # Body direview AMAN di P1 (autoescape Jinja2). Titik Stored XSS (W-A03b) di fase P2.
+    # Body direview AMAN di P1 (autoescape Jinja2). Titik Stored XSS (Web-A03-b) di fase P2.
     body: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

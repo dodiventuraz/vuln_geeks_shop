@@ -1,8 +1,8 @@
-"""Penyajian file statis "assets" — target W-A05b.
+"""Penyajian file statis "assets" — target Web-A05-b.
 
 - AMAN (disabled): tolak path traversal & dotfile; hanya file biasa di dalam
   direktori `lab_files/`.
-- RENTAN (W-A05b enabled): sajikan path apa adanya → dotfile (`.env.bak`),
+- RENTAN (Web-A05-b enabled): sajikan path apa adanya → dotfile (`.env.bak`),
   artefak `.bak`, dan path traversal (`../`) ikut terlayani.
 """
 
@@ -22,8 +22,8 @@ router = APIRouter(tags=["web-files"])
 
 @router.get("/assets/{path:path}", response_class=PlainTextResponse)
 def serve_asset(path: str):
-    if challenges.enabled("web.W-A05b"):
-        # LAB-VULN: W-A05b (intentional) — tanpa sanitasi: dotfile & traversal terlayani.
+    if challenges.enabled("web.Web-A05-b"):
+        # LAB-VULN: Web-A05-b (intentional) — tanpa sanitasi: dotfile & traversal terlayani.
         target = BASE / path
     else:
         # AMAN: tolak dotfile & traversal; batasi ke dalam BASE.

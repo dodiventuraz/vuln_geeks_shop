@@ -22,11 +22,11 @@ class LabWarningMiddleware(BaseHTTPMiddleware):
 
 
 class CorsSecurityMiddleware(BaseHTTPMiddleware):
-    """CORS + security headers, bercabang di W-A05c.
+    """CORS + security headers, bercabang di Web-A05-c.
 
     - AMAN (disabled): hanya origin ter-allowlist yang di-ACAO, plus security header
       dipasang (nosniff / frame-options / referrer-policy).
-    - RENTAN (W-A05c enabled): refleksikan Origin APA PUN + `allow-credentials: true`,
+    - RENTAN (Web-A05-c enabled): refleksikan Origin APA PUN + `allow-credentials: true`,
       dan security header TIDAK dipasang.
     """
 
@@ -34,13 +34,13 @@ class CorsSecurityMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         origin = request.headers.get("origin")
 
-        if challenges.enabled("web.W-A05c"):
-            # LAB-VULN: W-A05c (intentional) — wildcard-refleksi origin + credentials.
+        if challenges.enabled("web.Web-A05-c"):
+            # LAB-VULN: Web-A05-c (intentional) — wildcard-refleksi origin + credentials.
             if origin:
                 response.headers["Access-Control-Allow-Origin"] = origin
                 response.headers["Access-Control-Allow-Credentials"] = "true"
                 # Bukti: origin sembarang bisa membaca respons ber-kredensial.
-                response.headers["X-Lab-Flag"] = challenges.flag("web.W-A05c") or ""
+                response.headers["X-Lab-Flag"] = challenges.flag("web.Web-A05-c") or ""
             # security header sengaja TIDAK dipasang.
         else:
             # AMAN: hanya origin ter-allowlist.

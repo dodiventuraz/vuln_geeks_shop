@@ -1,12 +1,12 @@
 """Dependency bersama untuk REST API (auth Bearer JWT).
 
 Dua varian current-user:
-- `get_api_user_v1`: permukaan LAMA, lebih rentan. Bercabang di A-2 (Broken Auth):
+- `get_api_user_v1`: permukaan LAMA, lebih rentan. Bercabang di API-A2 (Broken Auth):
   saat enabled, token yang tak tervalidasi (mis. `alg:none` / tanda tangan palsu)
   tetap diterima.
 - `get_api_user_v2`: permukaan BARU, selalu verifikasi tanda tangan (aman).
 
-Perbedaan v1 vs v2 sekaligus menjadi bahan A-9 (Improper Inventory Management).
+Perbedaan v1 vs v2 sekaligus menjadi bahan API-A9 (Improper Inventory Management).
 """
 
 from __future__ import annotations
@@ -48,11 +48,11 @@ def get_api_user_v1(
     token = creds.credentials
     request.state.jwt_forged = False
 
-    if challenges.enabled("api.A-2"):
+    if challenges.enabled("api.API-A2"):
         try:
             payload = decode_access_token(token)  # coba jalur aman dulu
         except jwt.PyJWTError:
-            # LAB-VULN: A-2 (intentional) — terima token TANPA verifikasi tanda tangan
+            # LAB-VULN: API-A2 (intentional) — terima token TANPA verifikasi tanda tangan
             # (alg:none / secret salah). Klaim dipercaya mentah.
             try:
                 payload = jwt.decode(token, options={"verify_signature": False})

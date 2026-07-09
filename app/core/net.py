@@ -1,7 +1,7 @@
 """Utilitas jaringan untuk fitur "import produk dari URL".
 
 P1: implementasi AMAN — memvalidasi tujuan agar server tidak bisa dipaksa
-menembak alamat internal (anti-SSRF). Versi RENTAN (W-A10 / A-7) baru ditambahkan
+menembak alamat internal (anti-SSRF). Versi RENTAN (Web-A10 / API-A7) baru ditambahkan
 di fase P2/P3 sebagai cabang `if challenges.enabled(...)`.
 """
 
@@ -61,7 +61,7 @@ def fetch_bytes(url: str, *, max_bytes: int = 5 * 1024 * 1024, timeout: float = 
     """Ambil konten URL dengan batas ukuran & timeout.
 
     AMAN: validasi tujuan dulu, larang redirect (agar tidak di-bypass ke internal).
-    TODO[P2/P3] W-A10 / A-7: cabang rentan (httpx.get(user_url) tanpa validasi)
+    TODO[P2/P3] Web-A10 / API-A7: cabang rentan (httpx.get(user_url) tanpa validasi)
     diselipkan di call-site (web/admin & api), dijaga challenges.enabled(...).
     """
     validate_public_url(url)
@@ -77,7 +77,7 @@ def fetch_bytes(url: str, *, max_bytes: int = 5 * 1024 * 1024, timeout: float = 
 def fetch_url_unsafe(
     url: str, *, max_bytes: int = 5 * 1024 * 1024, timeout: float = 5.0
 ) -> tuple[str, bytes]:
-    """LAB-VULN: W-A10 SSRF (intentional) — ambil URL TANPA validasi tujuan.
+    """LAB-VULN: Web-A10 SSRF (intentional) — ambil URL TANPA validasi tujuan.
 
     Mengikuti redirect dan menembak alamat mana pun (termasuk internal/loopback).
     Mengembalikan (preview_text, content). Dipakai hanya di cabang challenge enabled.

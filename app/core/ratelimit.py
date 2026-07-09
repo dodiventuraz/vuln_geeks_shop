@@ -1,7 +1,7 @@
 """Rate limiting login sederhana (in-memory).
 
-Dipakai jalur AMAN W-A07a: setelah beberapa kegagalan login berturut untuk satu
-email dalam jendela waktu, akun/permintaan dikunci sementara. Saat W-A07a enabled,
+Dipakai jalur AMAN Web-A07-a: setelah beberapa kegagalan login berturut untuk satu
+email dalam jendela waktu, akun/permintaan dikunci sementara. Saat Web-A07-a enabled,
 pembatasan ini SENGAJA tidak diberlakukan → brute force bebas.
 
 Catatan lab: state in-memory & tidak terdistribusi — cukup untuk demonstrasi.

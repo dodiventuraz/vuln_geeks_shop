@@ -26,17 +26,15 @@ wishlist, profil, admin panel) + REST API v1/v2, dengan kerentanan yang bisa di-
 
 | Cakupan | Status |
 |---|---|
-| **Web — OWASP Top 10 (2021)** | **20/20 kategori aktif** (W-A01a … W-A10) ✅ |
-| **API — OWASP API Top 10 (2023)** | **4/11 entri aktif** (A-1, A-2, A-3b, A-9) — sisanya backlog ⚠️ |
+| **Web — OWASP Top 10 (2021)** | **20/20 kategori aktif** (Web-A01-a … Web-A10) ✅ |
+| **API — OWASP API Top 10 (2023)** | **11/11 entri aktif** (API-A1 … API-A10) ✅ |
 | Setiap vuln punya | dua cabang (rentan/aman) via toggle, flag, exploit-test |
 
 > **Kerentanan di sini DISENGAJA.** Tiap titik rentan diberi penanda `# LAB-VULN: <id> (intentional)`
 > dan bercabang `if challenges.enabled("<id>"): <rentan> else: <aman>`. Detail per challenge di
 > `CHALLENGES.md`; walkthrough di `SOLUTIONS.md` (gitignored).
 >
-> ⚠️ **Backlog:** A-3a (mass assignment), A-4 (resource consumption), A-5 (function-level authz),
-> A-6 (business-flow abuse), A-7 (SSRF API), A-8 (misconfig `/docs`), A-10 (unsafe 3rd-party) belum
-> diimplementasikan (`enabled: false`). GraphQL (opsional) juga backlog.
+> Backlog opsional: endpoint GraphQL (Strawberry) belum dibuat.
 
 ## 👤 Akun Seed (untuk login)
 
@@ -88,7 +86,7 @@ Build pertama kali ~3–8 menit (install dependency + pull image). Service yang 
 | `app` | FastAPI/Uvicorn — web SSR + REST API | **127.0.0.1:8099** |
 | `db` | PostgreSQL 16 | — (internal saja) |
 | `mailhog` | mock email + UI | **127.0.0.1:8025** |
-| `internal-metadata` | target SSRF internal (W-A10 / A-7) | — (internal saja) |
+| `internal-metadata` | target SSRF internal (Web-A10 / API-A7) | — (internal saja) |
 | `payment-mock` | gateway pembayaran mock | — (internal saja) |
 
 > **Isolasi:** hanya `app` (+ UI mailhog) yang dipetakan ke `127.0.0.1`. Selebihnya hanya
@@ -182,9 +180,9 @@ app/
   api/v1/  api/v2/   # REST API (v1 lebih rentan, v2 lebih aman) + deps/serializers
   web/               # router SSR + templates/ Jinja2 + static/
 seed/                # seed deterministik (akun, produk, order contoh)
-lab_files/           # artefak "bocor" untuk W-A05b (data palsu)
+lab_files/           # artefak "bocor" untuk Web-A05-b (data palsu)
 tests/               # fungsional + exploit-test per vuln (web & API) + scoreboard
-challenges.yaml      # toggle kerentanan (web 20/20 aktif, api 4/11 aktif)
+challenges.yaml      # toggle kerentanan (web 20/20 aktif, api 11/11 aktif)
 docker-compose.yml  Dockerfile  Makefile  requirements.txt  pytest.ini
 README.md  CHALLENGES.md   (SOLUTIONS.md → gitignored, tidak di-publish)
 ```
@@ -207,7 +205,7 @@ README.md  CHALLENGES.md   (SOLUTIONS.md → gitignored, tidak di-publish)
 | Metrik | Target | Status |
 |---|---|---|
 | Cakupan OWASP Top 10 (web) | 10/10 kategori | ✅ 10/10 (20 sub-challenge) |
-| Cakupan OWASP API Top 10 | 10/10 kategori | ⚠️ 4/11 entri aktif (sisanya backlog) |
+| Cakupan OWASP API Top 10 | 10/10 kategori | ✅ 10/10 (11 entri API-A1…API-A10) |
 | Setup dari nol | ≤ 5 menit, 1 perintah | ✅ `make up` + `make seed` |
 | Reset ke state bersih | ≤ 30 detik | ✅ `make reset` (seed drop+create, deterministik) |
 | Seed deterministik | 100% | ✅ terverifikasi (snapshot identik antar-run) |

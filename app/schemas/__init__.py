@@ -1,7 +1,7 @@
 """Skema Pydantic v2.
 
 P1: skema AMAN & ketat (allowlist field, validasi tipe). Pelonggaran yang disengaja
-(mass assignment A-3a, qty negatif W-A04a) baru dibuka di fase P2/P3.
+(mass assignment API-A3-a, qty negatif Web-A04-a) baru dibuka di fase P2/P3.
 """
 
 from __future__ import annotations
@@ -50,7 +50,7 @@ class ProductOut(BaseModel):
     category_id: int | None = None
 
 
-# --- Input business (AMAN: qty dibatasi positif; longgar-nya menyusul di W-A04a) ---
+# --- Input business (AMAN: qty dibatasi positif; longgar-nya menyusul di Web-A04-a) ---
 class CartAddIn(BaseModel):
     product_id: int
     quantity: int = Field(default=1, ge=1, le=100)

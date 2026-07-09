@@ -4,7 +4,7 @@ Menyapu (drop) lalu membangun ulang skema, kemudian mengisi data awal yang sama
 setiap kali dijalankan. Dipanggil oleh `make seed` dan `make reset`.
 
 P1: data AMAN & fungsional. Beberapa akun/order sengaja disiapkan sebagai target
-kerentanan fase berikutnya (mis. order milik user berbeda untuk IDOR W-A01a / BOLA A-1).
+kerentanan fase berikutnya (mis. order milik user berbeda untuk IDOR Web-A01-a / BOLA API-A1).
 """
 
 from __future__ import annotations

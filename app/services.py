@@ -1,8 +1,8 @@
 """Logika bisnis e-commerce.
 
 Kerentanan yang di-toggle di sini (P2):
-- W-A04a (qty negatif): `add_to_cart` melonggarkan validasi kuantitas saat enabled.
-- W-A04b (race kupon TOCTOU): `redeem_coupon` memilih jalur CHECK+USE (rentan) vs atomik (aman).
+- Web-A04-a (qty negatif): `add_to_cart` melonggarkan validasi kuantitas saat enabled.
+- Web-A04-b (race kupon TOCTOU): `redeem_coupon` memilih jalur CHECK+USE (rentan) vs atomik (aman).
 """
 
 from __future__ import annotations
@@ -32,8 +32,8 @@ def get_or_create_cart(db: Session, user) -> Cart:
 
 
 def add_to_cart(db: Session, user, product_id: int, quantity: int = 1) -> CartItem:
-    if challenges.enabled("web.W-A04a"):
-        # LAB-VULN: W-A04a business logic (intentional) — kuantitas TIDAK divalidasi
+    if challenges.enabled("web.Web-A04-a"):
+        # LAB-VULN: Web-A04-a business logic (intentional) — kuantitas TIDAK divalidasi
         # (boleh negatif) → total bisa jadi negatif.
         quantity = int(quantity)
     else:
@@ -66,7 +66,7 @@ def set_cart_quantity(db: Session, item: CartItem, quantity: int) -> None:
 
 
 # --------------------------------------------------------------------------- #
-# Redeem kupon — target W-A04b (race condition / TOCTOU).
+# Redeem kupon — target Web-A04-b (race condition / TOCTOU).
 # Fase "check" dan "consume" sengaja dipisah pada jalur rentan (celah TOCTOU).
 # --------------------------------------------------------------------------- #
 def coupon_check(db: Session, code: str) -> Coupon | None:
@@ -97,9 +97,9 @@ def coupon_consume_atomic(db: Session, code: str) -> bool:
 
 
 def redeem_coupon(db: Session, code: str) -> bool:
-    """Redeem satu kali. W-A04b memilih jalur TOCTOU (rentan) / atomik (aman)."""
-    if challenges.enabled("web.W-A04b"):
-        # LAB-VULN: W-A04b TOCTOU (intentional) — CHECK lalu USE tanpa lock/atomicity.
+    """Redeem satu kali. Web-A04-b memilih jalur TOCTOU (rentan) / atomik (aman)."""
+    if challenges.enabled("web.Web-A04-b"):
+        # LAB-VULN: Web-A04-b TOCTOU (intentional) — CHECK lalu USE tanpa lock/atomicity.
         coupon = coupon_check(db, code)
         if coupon is None:
             return False
@@ -128,7 +128,7 @@ def checkout(db: Session, user, *, address_id: int | None, coupon_code: str | No
     """Buat order dari isi cart, terapkan kupon, bayar (mock), kurangi stok.
 
     P1 AMAN: pengecekan & pemakaian stok/kupon dilakukan berurutan dalam satu
-    transaksi. TODO[P2] W-A04b: versi TOCTOU tanpa lock diselipkan di fase P2.
+    transaksi. TODO[P2] Web-A04-b: versi TOCTOU tanpa lock diselipkan di fase P2.
     """
     cart = get_or_create_cart(db, user)
     if not cart.items:

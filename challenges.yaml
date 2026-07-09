@@ -1,6 +1,6 @@
 # challenges.yaml — toggle kerentanan Vuln Geeks Shop
 #
-# Kontrak: kode bercabang berdasarkan flag ini lewat challenges.enabled("web.W-A01a").
+# Kontrak: kode bercabang berdasarkan flag ini lewat challenges.enabled("web.Web-A01-a").
 # Level: easy | medium | hard | info
 #
 # P0 (Fondasi): SEMUA entri enabled: false. Belum ada cabang kode rentan yang
@@ -8,37 +8,37 @@
 
 web:
   # OWASP Top 10 (2021)
-  W-A01a: { enabled: true,  level: easy,   flag: "FLAG{idor_orders}" }          # IDOR order/invoice  [P2 done]
-  W-A01b: { enabled: true,  level: medium, flag: "FLAG{forced_admin}" }         # Akses admin tanpa role  [P2 done]
-  W-A01c: { enabled: true,  level: medium, flag: "FLAG{product_mutation}" }     # Aksi terlarang di produk  [P2 done]
-  W-A02a: { enabled: true,  level: easy,   flag: "FLAG{weak_md5_hash}" }         # Hash password lemah  [P2 done]
-  W-A02b: { enabled: true,  level: medium, flag: "FLAG{plaintext_pii}" }         # Data sensitif plaintext  [P2 done]
-  W-A03a: { enabled: true,  level: easy,   flag: "FLAG{sqli_login}" }            # SQL Injection (login/search)  [P2 done]
-  W-A03b: { enabled: true,  level: easy,   flag: "FLAG{stored_xss}" }            # XSS (stored & reflected)  [P2 done]
-  W-A03c: { enabled: true,  level: hard,   flag: "FLAG{ssti_jinja2}" }           # Server-Side Template Injection  [P2 done]
-  W-A03d: { enabled: true,  level: hard,   flag: "FLAG{command_injection}" }     # Command injection  [P2 done]
-  W-A04a: { enabled: true,  level: medium, flag: "FLAG{negative_qty}" }          # Business logic: qty negatif  [P2 done]
-  W-A04b: { enabled: true,  level: hard,   flag: "FLAG{race_coupon}" }           # Race condition kupon/stock  [P2 done]
-  W-A05a: { enabled: true,  level: easy,   flag: "FLAG{verbose_error}" }         # Misconfig: verbose error/debug  [P2 done]
-  W-A05b: { enabled: true,  level: easy,   flag: "FLAG{exposed_files}" }         # File & path ter-expose  [P2 done]
-  W-A05c: { enabled: true,  level: medium, flag: "FLAG{loose_cors}" }            # CORS longgar & header hilang  [P2 done]
-  W-A06:  { enabled: true,  level: medium, flag: "FLAG{vulnerable_component}" }  # Komponen rentan (CVE)  [P2 done]
-  W-A07a: { enabled: true,  level: easy,   flag: "FLAG{brute_force}" }           # Tanpa rate limit → brute force  [P2 done]
-  W-A07b: { enabled: true,  level: hard,   flag: "FLAG{predictable_token}" }     # Token reset predictable / fixation  [P2 done]
-  W-A08:  { enabled: true,  level: hard,   flag: "FLAG{insecure_deser}" }        # Insecure deserialization / JWT lemah  [P2 done]
-  W-A09:  { enabled: true,  level: info,   flag: null }                          # Logging & monitoring (amati)  [P2 done]
-  W-A10:  { enabled: true,  level: medium, flag: "FLAG{ssrf_import}" }           # SSRF via import URL  [P2 done]
+  Web-A01-a: { enabled: true,  level: easy,   flag: "FLAG{idor_orders}" }          # IDOR order/invoice  [P2 done]
+  Web-A01-b: { enabled: true,  level: medium, flag: "FLAG{forced_admin}" }         # Akses admin tanpa role  [P2 done]
+  Web-A01-c: { enabled: true,  level: medium, flag: "FLAG{product_mutation}" }     # Aksi terlarang di produk  [P2 done]
+  Web-A02-a: { enabled: true,  level: easy,   flag: "FLAG{weak_md5_hash}" }         # Hash password lemah  [P2 done]
+  Web-A02-b: { enabled: true,  level: medium, flag: "FLAG{plaintext_pii}" }         # Data sensitif plaintext  [P2 done]
+  Web-A03-a: { enabled: true,  level: easy,   flag: "FLAG{sqli_login}" }            # SQL Injection (login/search)  [P2 done]
+  Web-A03-b: { enabled: true,  level: easy,   flag: "FLAG{stored_xss}" }            # XSS (stored & reflected)  [P2 done]
+  Web-A03-c: { enabled: true,  level: hard,   flag: "FLAG{ssti_jinja2}" }           # Server-Side Template Injection  [P2 done]
+  Web-A03-d: { enabled: true,  level: hard,   flag: "FLAG{command_injection}" }     # Command injection  [P2 done]
+  Web-A04-a: { enabled: true,  level: medium, flag: "FLAG{negative_qty}" }          # Business logic: qty negatif  [P2 done]
+  Web-A04-b: { enabled: true,  level: hard,   flag: "FLAG{race_coupon}" }           # Race condition kupon/stock  [P2 done]
+  Web-A05-a: { enabled: true,  level: easy,   flag: "FLAG{verbose_error}" }         # Misconfig: verbose error/debug  [P2 done]
+  Web-A05-b: { enabled: true,  level: easy,   flag: "FLAG{exposed_files}" }         # File & path ter-expose  [P2 done]
+  Web-A05-c: { enabled: true,  level: medium, flag: "FLAG{loose_cors}" }            # CORS longgar & header hilang  [P2 done]
+  Web-A06:  { enabled: true,  level: medium, flag: "FLAG{vulnerable_component}" }  # Komponen rentan (CVE)  [P2 done]
+  Web-A07-a: { enabled: true,  level: easy,   flag: "FLAG{brute_force}" }           # Tanpa rate limit → brute force  [P2 done]
+  Web-A07-b: { enabled: true,  level: hard,   flag: "FLAG{predictable_token}" }     # Token reset predictable / fixation  [P2 done]
+  Web-A08:  { enabled: true,  level: hard,   flag: "FLAG{insecure_deser}" }        # Insecure deserialization / JWT lemah  [P2 done]
+  Web-A09:  { enabled: true,  level: info,   flag: null }                          # Logging & monitoring (amati)  [P2 done]
+  Web-A10:  { enabled: true,  level: medium, flag: "FLAG{ssrf_import}" }           # SSRF via import URL  [P2 done]
 
 api:
   # OWASP API Security Top 10 (2023)
-  A-1:   { enabled: true,  level: easy,   flag: "FLAG{bola_orders}" }            # BOLA (IDOR di API)  [P3 done]
-  A-2:   { enabled: true,  level: medium, flag: "FLAG{jwt_broken_auth}" }        # Broken Authentication (JWT)  [P3 done]
-  A-3a:  { enabled: false, level: medium, flag: "FLAG{mass_assignment}" }        # Mass assignment
-  A-3b:  { enabled: true,  level: easy,   flag: "FLAG{excessive_data}" }         # Excessive data exposure  [P3 done]
-  A-4:   { enabled: false, level: easy,   flag: "FLAG{unrestricted_consumption}" } # Unrestricted resource consumption
-  A-5:   { enabled: false, level: medium, flag: "FLAG{broken_func_auth}" }       # Broken function level authorization
-  A-6:   { enabled: false, level: medium, flag: "FLAG{business_flow_abuse}" }    # Unrestricted access to business flows
-  A-7:   { enabled: false, level: medium, flag: "FLAG{ssrf_api}" }               # SSRF (API)
-  A-8:   { enabled: false, level: easy,   flag: "FLAG{api_misconfig}" }          # Security misconfiguration (API)
-  A-9:   { enabled: true,  level: medium, flag: "FLAG{improper_inventory}" }     # Improper inventory management  [P3 done]
-  A-10:  { enabled: false, level: hard,   flag: "FLAG{unsafe_3rd_party}" }       # Unsafe consumption of 3rd-party API
+  API-A1:   { enabled: true,  level: easy,   flag: "FLAG{bola_orders}" }            # BOLA (IDOR di API)  [P3 done]
+  API-A2:   { enabled: true,  level: medium, flag: "FLAG{jwt_broken_auth}" }        # Broken Authentication (JWT)  [P3 done]
+  API-A3-a:  { enabled: true,  level: medium, flag: "FLAG{mass_assignment}" }        # Mass assignment  [P3 done]
+  API-A3-b:  { enabled: true,  level: easy,   flag: "FLAG{excessive_data}" }         # Excessive data exposure  [P3 done]
+  API-A4:   { enabled: true,  level: easy,   flag: "FLAG{unrestricted_consumption}" } # Unrestricted resource consumption  [P3 done]
+  API-A5:   { enabled: true,  level: medium, flag: "FLAG{broken_func_auth}" }       # Broken function level authorization  [P3 done]
+  API-A6:   { enabled: true,  level: medium, flag: "FLAG{business_flow_abuse}" }    # Unrestricted access to business flows  [P3 done]
+  API-A7:   { enabled: true,  level: medium, flag: "FLAG{ssrf_api}" }               # SSRF (API)  [P3 done]
+  API-A8:   { enabled: true,  level: easy,   flag: "FLAG{api_misconfig}" }          # Security misconfiguration (API)  [P3 done]
+  API-A9:   { enabled: true,  level: medium, flag: "FLAG{improper_inventory}" }     # Improper inventory management  [P3 done]
+  API-A10:  { enabled: true,  level: hard,   flag: "FLAG{unsafe_3rd_party}" }       # Unsafe consumption of 3rd-party API  [P3 done]

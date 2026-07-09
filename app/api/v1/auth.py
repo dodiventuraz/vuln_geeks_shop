@@ -1,7 +1,7 @@
 """API auth (v1) — penerbitan JWT untuk jalur API (PyJWT).
 
 P1: hanya penerbitan token yang AMAN. Permukaan API penuh (BOLA, mass assignment,
-dll.) dibangun di fase P3. Verifikasi token yang RENTAN (A-2 alg:none) juga menyusul.
+dll.) dibangun di fase P3. Verifikasi token yang RENTAN (API-A2 alg:none) juga menyusul.
 """
 
 from __future__ import annotations

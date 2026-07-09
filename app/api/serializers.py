@@ -1,12 +1,16 @@
 """Serializer dict untuk respons API.
 
 `user_full` sengaja membocorkan field sensitif (password_hash/PII) — dipakai hanya
-di jalur rentan A-3b. `user_public` adalah bentuk aman (field terbatas).
+di jalur rentan API-A3-b. `user_public` adalah bentuk aman (field terbatas).
 """
 
 from __future__ import annotations
 
-from app.models import Order, User
+from app.models import Order, Product, User
+
+
+def product_public(p: Product) -> dict:
+    return {"id": p.id, "name": p.name, "slug": p.slug, "price": str(p.price), "stock": p.stock}
 
 
 def user_public(u: User) -> dict:
@@ -14,7 +18,7 @@ def user_public(u: User) -> dict:
 
 
 def user_full(u: User) -> dict:
-    # LAB-VULN: A-3b — schema penuh membocorkan password_hash/PII/saldo.
+    # LAB-VULN: API-A3-b — schema penuh membocorkan password_hash/PII/saldo.
     return {
         "id": u.id,
         "email": u.email,

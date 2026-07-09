@@ -1,8 +1,8 @@
 """Route autentikasi web (SSR): register, login, logout, lupa/reset password.
 
 P1: SEMUA jalur AMAN — password di-hash pbkdf2 (salted), lookup parameterized (ORM),
-token reset dari `secrets`. Titik kerentanan (W-A03a SQLi login, W-A07a brute force,
-W-A07b token predictable) diberi penanda TODO untuk fase P2.
+token reset dari `secrets`. Titik kerentanan (Web-A03-a SQLi login, Web-A07-a brute force,
+Web-A07-b token predictable) diberi penanda TODO untuk fase P2.
 """
 
 from __future__ import annotations
@@ -72,11 +72,11 @@ def login_form(request: Request, user=Depends(get_current_user)):
 
 
 def _establish_session(request: Request, user) -> None:
-    """Set sesi login. W-A07b mengontrol regenerasi state sesi."""
-    if not challenges.enabled("web.W-A07b"):
+    """Set sesi login. Web-A07-b mengontrol regenerasi state sesi."""
+    if not challenges.enabled("web.Web-A07-b"):
         # AMAN: regenerasi state sesi saat login (cegah session fixation).
         request.session.clear()
-    # LAB-VULN: W-A07b (intentional) — saat enabled, state sesi pra-login TIDAK
+    # LAB-VULN: Web-A07-b (intentional) — saat enabled, state sesi pra-login TIDAK
     # diregenerasi, sehingga id sesi yang ditetapkan sebelum login tetap dipakai.
     request.session["user_id"] = user.id
 
@@ -88,23 +88,23 @@ def login(
     password: str = Form(...),
     db: Session = Depends(get_db),
 ):
-    # W-A07a: cabang AMAN memberlakukan rate limit; enabled → tak dibatasi (brute force).
-    if not challenges.enabled("web.W-A07a") and ratelimit.is_locked(email):
+    # Web-A07-a: cabang AMAN memberlakukan rate limit; enabled → tak dibatasi (brute force).
+    if not challenges.enabled("web.Web-A07-a") and ratelimit.is_locked(email):
         return templates.TemplateResponse(
             "auth/login.html",
             {"request": request, "user": None, "error": "Terlalu banyak percobaan. Coba lagi nanti."},
             status_code=429,
         )
 
-    # W-A03a: find_user_for_login memilih jalur SQLi (rentan) / parameterized (aman).
+    # Web-A03-a: find_user_for_login memilih jalur SQLi (rentan) / parameterized (aman).
     user = find_user_for_login(db, email)
 
-    # LAB-VULN: W-A03a SQLi login (intentional) — bila query mengembalikan baris yang
+    # LAB-VULN: Web-A03-a SQLi login (intentional) — bila query mengembalikan baris yang
     # email-nya TIDAK sama dengan input, berarti injeksi berhasil melewati password.
-    if challenges.enabled("web.W-A03a") and user is not None and user.email != email:
+    if challenges.enabled("web.Web-A03-a") and user is not None and user.email != email:
         ratelimit.reset(email)
         _establish_session(request, user)
-        request.session["lab_flag"] = challenges.flag("web.W-A03a")
+        request.session["lab_flag"] = challenges.flag("web.Web-A03-a")
         return RedirectResponse("/", status_code=303)
 
     if user is None or user.email != email or not verify_password(password, user.password_hash):
@@ -118,11 +118,11 @@ def login(
     prior_failures = ratelimit.failure_count(email)
     ratelimit.reset(email)
     _establish_session(request, user)
-    # W-A09: aksi sensitif (login berhasil) — dicatat hanya bila logging tidak "dimatikan".
+    # Web-A09: aksi sensitif (login berhasil) — dicatat hanya bila logging tidak "dimatikan".
     audit.log_sensitive("login_success", user_id=user.id, email=user.email)
-    # LAB-VULN: W-A07a — login sukses setelah banyak kegagalan (brute force dibiarkan).
-    if challenges.enabled("web.W-A07a") and prior_failures >= ratelimit.MAX_FAILURES:
-        request.session["lab_flag"] = challenges.flag("web.W-A07a")
+    # LAB-VULN: Web-A07-a — login sukses setelah banyak kegagalan (brute force dibiarkan).
+    if challenges.enabled("web.Web-A07-a") and prior_failures >= ratelimit.MAX_FAILURES:
+        request.session["lab_flag"] = challenges.flag("web.Web-A07-a")
     return RedirectResponse("/", status_code=303)
 
 
@@ -142,7 +142,7 @@ def forgot(request: Request, email: str = Form(...), db: Session = Depends(get_d
     user = get_user_by_email(db, email)
     reset_link = None
     if user:
-        # W-A07b: make_reset_token memilih secrets (aman) / random ber-seed (predictable).
+        # Web-A07-b: make_reset_token memilih secrets (aman) / random ber-seed (predictable).
         user.reset_token = make_reset_token(user.id)
         user.reset_token_expiry = datetime.now(timezone.utc) + timedelta(hours=1)
         db.commit()
@@ -189,8 +189,8 @@ def reset(
     user.reset_token = None
     user.reset_token_expiry = None
     db.commit()
-    if challenges.enabled("web.W-A07b"):
+    if challenges.enabled("web.Web-A07-b"):
         # Bukti: reset berhasil lewat token yang bisa diprediksi (account takeover).
-        request.session["lab_flag"] = challenges.flag("web.W-A07b")
+        request.session["lab_flag"] = challenges.flag("web.Web-A07-b")
         return RedirectResponse("/", status_code=303)
     return RedirectResponse("/login", status_code=303)

@@ -55,7 +55,7 @@ class Settings(BaseSettings):
     # --- Payment gateway mock (REQ-S5). Kosong = fallback deterministik lokal. ---
     payment_mock_url: str = ""
 
-    # --- CORS (placeholder AMAN di P0; pelonggaran W-A05c menyusul di P2) ---
+    # --- CORS (placeholder AMAN di P0; pelonggaran Web-A05-c menyusul di P2) ---
     cors_allow_origins: list[str] = Field(default_factory=lambda: ["http://127.0.0.1:8099"])
 
     # --- Challenges toggle file ---
