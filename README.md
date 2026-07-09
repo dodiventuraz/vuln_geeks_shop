@@ -85,7 +85,7 @@ Build pertama kali ~3–8 menit (install dependency + pull image). Service yang 
 
 | Service | Peran | Publikasi ke host |
 |---|---|---|
-| `app` | FastAPI/Uvicorn — web SSR + REST API | **127.0.0.1:8000** |
+| `app` | FastAPI/Uvicorn — web SSR + REST API | **127.0.0.1:8099** |
 | `db` | PostgreSQL 16 | — (internal saja) |
 | `mailhog` | mock email + UI | **127.0.0.1:8025** |
 | `internal-metadata` | target SSRF internal (W-A10 / A-7) | — (internal saja) |
@@ -101,15 +101,15 @@ docker compose run --rm app python -m seed.seed
 Skema tabel dibuat otomatis saat `app` start; perintah ini mengisi akun, produk, kupon, dan order contoh (deterministik).
 
 ### 4. Buka di browser
-- Toko & admin: **http://127.0.0.1:8000**
-- Swagger API (OpenAPI): **http://127.0.0.1:8000/docs**
+- Toko & admin: **http://127.0.0.1:8099**
+- Swagger API (OpenAPI): **http://127.0.0.1:8099/docs**
 - Mailhog (email masuk): **http://127.0.0.1:8025**
 
 Login pakai akun seed (lihat tabel **Akun Seed** di atas), mis. `admin@vulnshop.lab` / `Admin123!`.
 
 Cek kesehatan app + koneksi DB:
 ```bash
-curl http://127.0.0.1:8000/health
+curl http://127.0.0.1:8099/health
 # {"status":"ok", ... ,"database":{"ok":true,...}}
 ```
 Setiap respons membawa header **`X-Lab-Warning: INTENTIONALLY VULNERABLE - LAB USE ONLY`**.
@@ -140,7 +140,7 @@ make test    # pytest di dalam container
 
 ### Troubleshooting
 - **`error ... the docker daemon is not running`** → Docker Desktop belum siap; tunggu "Engine running", lalu ulangi.
-- **Port `8000`/`8025` sudah dipakai** → hentikan proses lain, atau ubah mapping port di `docker-compose.yml`.
+- **Port `8099`/`8025` sudah dipakai** → hentikan proses lain, atau ubah mapping port di `docker-compose.yml`.
 - **Halaman error / katalog kosong** → lupa seed; jalankan langkah 3.
 - **Habis mengubah kode** → `docker compose up --build -d` untuk rebuild image `app`.
 - **`docker compose up --build -d` "senyap"** → `-d` = detached (background); itu normal. Cek dengan `docker compose ps`. Hilangkan `-d` untuk melihat log build langsung.
@@ -163,7 +163,7 @@ export DATABASE_URL="sqlite:///./labdev.db"
 #   $env:DATABASE_URL = "sqlite:///./labdev.db"
 
 python -m seed.seed
-uvicorn app.main:app --host 127.0.0.1 --port 8000
+uvicorn app.main:app --host 127.0.0.1 --port 8099
 ```
 
 > Catatan: mode ini tanpa mailhog & service SSRF internal. Untuk lab penuh, pakai Docker Compose.
@@ -193,7 +193,7 @@ README.md  CHALLENGES.md   (SOLUTIONS.md → gitignored, tidak di-publish)
 
 ## 🎯 Cara Main
 
-1. Buka **http://127.0.0.1:8000**, login pakai akun seed (lihat tabel di atas).
+1. Buka **http://127.0.0.1:8099**, login pakai akun seed (lihat tabel di atas).
 2. Baca objective & hint tiap tantangan di **`CHALLENGES.md`** (termasuk peta pembelajaran → OWASP → tool).
 3. Eksploitasi → dapatkan **`FLAG{...}`** → submit di **`/scoreboard`** untuk melacak progres.
 4. Nyalakan/matikan tantangan lewat **`challenges.yaml`** (mendukung latihan bertahap Easy→Hard).

@@ -16,8 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 8000
+EXPOSE 8099
 
 # Bind ke 0.0.0.0 HANYA di dalam container (jaringan internal Docker).
 # Publikasi ke host dibatasi ke 127.0.0.1 lewat port mapping di docker-compose.yml.
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8099"]

@@ -14,13 +14,13 @@ services:
       APP_ENV: dev
       DATABASE_URL: postgresql+psycopg2://vuln:vuln@db:5432/vulnshop
       HOST: 0.0.0.0            # bind di dalam container saja; publikasi dibatasi di bawah
-      PORT: 8000
+      PORT: 8099
     ports:
-      - "127.0.0.1:8000:8000"  # JANGAN ubah ke 0.0.0.0
+      - "127.0.0.1:8099:8099"  # JANGAN ubah ke 0.0.0.0
     networks:
       - labnet
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8099/health"]
       interval: 10s
       timeout: 5s
       retries: 5

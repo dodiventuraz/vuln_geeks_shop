@@ -27,7 +27,7 @@ class Settings(BaseSettings):
 
     # --- Server bind (REQ-S1: default localhost, jangan 0.0.0.0) ---
     host: str = "127.0.0.1"
-    port: int = 8000
+    port: int = 8099
 
     # --- Database ---
     database_url: str = Field(
@@ -56,7 +56,7 @@ class Settings(BaseSettings):
     payment_mock_url: str = ""
 
     # --- CORS (placeholder AMAN di P0; pelonggaran W-A05c menyusul di P2) ---
-    cors_allow_origins: list[str] = Field(default_factory=lambda: ["http://127.0.0.1:8000"])
+    cors_allow_origins: list[str] = Field(default_factory=lambda: ["http://127.0.0.1:8099"])
 
     # --- Challenges toggle file ---
     challenges_file: str = "challenges.yaml"

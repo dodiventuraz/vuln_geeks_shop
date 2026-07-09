@@ -5,10 +5,10 @@ COMPOSE ?= docker compose
 
 .PHONY: up down reset seed test logs build
 
-## up: bangun & jalankan seluruh lab (app di http://127.0.0.1:8000)
+## up: bangun & jalankan seluruh lab (app di http://127.0.0.1:8099)
 up:
 	$(COMPOSE) up --build -d
-	@echo "Lab jalan. Cek: curl http://127.0.0.1:8000/health"
+	@echo "Lab jalan. Cek: curl http://127.0.0.1:8099/health"
 
 ## down: hentikan seluruh service (volume tetap)
 down:
