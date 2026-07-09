@@ -1,7 +1,7 @@
 # CHALLENGES.md — Vuln Geeks Shop
 
 Daftar tantangan latihan untuk lab ini. **File ini tidak memuat jawaban** — aman di-commit.
-Walkthrough & perbaikan ada di `SOLUTIONS.md` (dipisah / gitignored — lihat CLAUDE.md).
+Walkthrough & perbaikan ada di `SOLUTIONS.md` (terpisah & gitignored — hanya untuk instruktur, tidak di-publish ke repo).
 
 ## Cara pakai
 1. Nyalakan/matikan tantangan lewat `challenges.yaml`.
